@@ -1,0 +1,339 @@
+---
+import { business, yearsInBusiness } from '../../../data/business';
+import { serviceTypes } from '../../../data/serviceTypes';
+import { serviceAreas, getNearbyAreas } from '../../../data/serviceAreas';
+import type { ServiceType } from '../../../data/serviceTypes';
+import type { ServiceArea } from '../../../data/serviceAreas';
+import { serviceUrl, areaUrl, comboUrl, contactUrl } from '../../../lib/urls';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import SeoFaq from '../../../components/SeoFaq.astro';
+import SeoRelatedLinks from '../../../components/SeoRelatedLinks.astro';
+import SeoServiceAreas from '../../../components/SeoServiceAreas.astro';
+import SeoTestimonials from '../../../components/SeoTestimonials.astro';
+import { Icon } from 'astro-icon/components';
+
+export function getStaticPaths() {
+  const paths = [];
+  for (const area of serviceAreas) {
+    for (const service of serviceTypes) {
+      paths.push({
+        params: { area: area.slug, service: service.slug },
+        props: { area, service },
+      });
+    }
+  }
+  return paths;
+}
+
+interface Props {
+  area: ServiceArea;
+  service: ServiceType;
+}
+
+const { area, service } = Astro.props;
+const years = yearsInBusiness();
+const nearbyAreas = getNearbyAreas(area);
+const nearbyNames = nearbyAreas.map((a) => a.name).join(', ');
+
+const pageTitle = `${service.name} in ${area.name} | ${business.name}`;
+const pageDescription = `Looking for ${service.name.toLowerCase()} in ${area.name}? ${business.name} offers daily fresh ${service.name.toLowerCase()} with ${area.responseTime} delivery. Call ${business.phone}.`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Product',
+      '@id': `${business.website}${comboUrl(area.slug, service.slug)}#product`,
+      name: `${service.name} in ${area.name}`,
+      description: `${service.description} Available in ${area.name} with delivery.`,
+      brand: {
+        '@type': 'Brand',
+        name: business.name,
+      },
+      offers: {
+        '@type': 'AggregateOffer',
+        lowPrice: service.priceRanges[0]?.min ?? 0,
+        highPrice: service.priceRanges[0]?.max ?? 0,
+        priceCurrency: 'AED',
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: business.website },
+        { '@type': 'ListItem', position: 2, name: 'Our Products', item: `${business.website}/services/` },
+        { '@type': 'ListItem', position: 3, name: area.name, item: `${business.website}${areaUrl(area.slug)}` },
+        { '@type': 'ListItem', position: 4, name: service.name },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonicalUrl={`${business.website}${comboUrl(area.slug, service.slug)}`}
+  schema={schema}
+>
+  <Breadcrumbs
+    crumbs={[
+      { label: 'Our Products', href: '/services/' },
+      { label: area.name, href: areaUrl(area.slug) },
+      { label: service.name },
+    ]}
+  />
+
+  <article class="mx-auto max-w-7xl px-5 lg:px-8">
+    <header class="gradient-cream -mx-5 px-5 pb-10 pt-6 lg:-mx-8 lg:px-8 lg:pt-10">
+      <div class="lg:flex lg:items-start lg:gap-10">
+        <div class="lg:flex-1">
+          <div class="flex items-center gap-3 text-brand-600">
+            <div class="flex size-10 items-center justify-center rounded-lg bg-gradient-to-br from-brand-50 to-brand-100">
+              <Icon name={service.icon} class="size-6" />
+            </div>
+            <span class="text-sm font-semibold uppercase tracking-wide">
+              <span class="en-text">{service.name}</span>
+              <span class="ar-text hidden">{service.arName}</span>
+            </span>
+          </div>
+          <h1 class="mt-4 font-display text-3xl text-brand-900 sm:text-4xl lg:text-5xl">
+            <span class="en-text">{service.name} in {area.name}</span>
+            <span class="ar-text hidden">{service.arName} في {area.name}</span>
+          </h1>
+          <p class="mt-4 max-w-3xl text-lg leading-relaxed text-stone-600">
+            <span class="en-text">{pageDescription}</span>
+            <span class="ar-text hidden">هل تبحث عن {service.arName} في {area.name}؟ يقدم {business.name} {service.arName} طازجًا يوميًا مع توصيل خلال {area.responseTime}. اتصل على {business.phone}.</span>
+          </p>
+        </div>
+        <div class="mt-6 lg:mt-0 lg:w-80 lg:shrink-0">
+          <img
+            src={service.image}
+            alt={`${service.name} in ${area.name}`}
+            class="rounded-xl shadow-lg"
+            width="1024"
+            height="1024"
+            loading="eager"
+          />
+        </div>
+      </div>
+    </header>
+
+    <div class="mb-10 overflow-hidden rounded-xl">
+      <img
+        src={service.image}
+        alt={`${service.name} available in ${area.name}`}
+        class="h-64 w-full object-cover sm:h-80 lg:h-96"
+        width="1408"
+        height="768"
+        loading="eager"
+      />
+    </div>
+
+    <section class="prose-editorial max-w-3xl pb-12">
+      <h2>
+        <span class="en-text">Fresh {service.name} in {area.name}</span>
+        <span class="ar-text hidden">{service.arName} طازج في {area.name}</span>
+      </h2>
+      <p>
+        <span class="en-text">{service.description}</span>
+        <span class="ar-text hidden">{service.arDescription}</span>
+      </p>
+      <p>
+        <span class="en-text">{business.name} proudly serves {area.name} with daily fresh {service.name.toLowerCase()}. As a locally owned produce shop, we understand the needs of families, restaurants, and food businesses in this community. {area.description}</span>
+        <span class="ar-text hidden">يخدم {business.name} {area.name} بفخر بـ {service.arName} الطازج يوميًا. بصفتنا متجر منتجات مملوك محليًا، نفهم احتياجات العائلات والمطاعم والشركات الغذائية في هذا المجتمع. {area.arDescription}</span>
+      </p>
+      {nearbyAreas.length > 0 && (
+        <p>
+          <span class="en-text">In addition to {area.name}, we also deliver {service.name.toLowerCase()} to nearby communities including {nearbyNames}. No matter where you are in our service area, you can count on fast delivery and fresh quality from our team.</span>
+          <span class="ar-text hidden">بالإضافة إلى {area.name}، نوصل أيضًا {service.arName} إلى المجتمعات المجاورة بما في ذلك {nearbyNames}. بغض النظر عن مكان تواجدك في منطقة خدمتنا، يمكنك الاعتماد على التوصيل السريع والجودة الطازجة من فريقنا.</span>
+        </p>
+      )}
+    </section>
+
+    <section class="pb-12">
+      <div class="rounded-xl border border-stone-200/80 bg-white p-8 lg:p-10 shadow-sm">
+        <h2 class="font-display text-2xl text-brand-900 sm:text-3xl">
+          <span class="en-text">{service.name} Pricing in {area.name}</span>
+          <span class="ar-text hidden">أسعار {service.arName} في {area.name}</span>
+        </h2>
+        <div class="mt-6 space-y-4">
+          {service.priceRanges.map((range) => (
+            <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+              <span class="text-sm font-medium text-stone-700">
+                <span class="en-text">{range.label}</span>
+                <span class="ar-text hidden">{range.arLabel}</span>
+              </span>
+              <span class="text-sm font-semibold text-brand-700">
+                <span class="en-text">AED {range.min} - {range.max} {range.unit ? `(${range.unit})` : ''}</span>
+                <span class="ar-text hidden">{range.min} - {range.max} درهم إماراتي {range.arUnit ? `(${range.arUnit})` : ''}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+        <p class="mt-3 text-sm text-stone-500">
+          <span class="en-text">Prices are indicative and may vary based on seasonality and market rates. Call {business.phone} for today's exact prices.</span>
+          <span class="ar-text hidden">الأسعار تقريبية وقد تختلف بناءً على الموسمية وأسعار السوق. اتصل على {business.phone} للحصول على الأسعار الدقيقة اليوم.</span>
+        </p>
+        <div class="mt-6 flex flex-wrap items-center gap-4">
+          <div class="flex items-center gap-2 text-sm text-stone-600">
+            <Icon name="lucide:check-circle" class="size-5 text-brand-600" />
+            <span class="en-text">Daily fresh stock</span>
+            <span class="ar-text hidden">مخزون طازج يومي</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-stone-600">
+            <Icon name="lucide:check-circle" class="size-5 text-brand-600" />
+            <span class="en-text">{area.responseTime} delivery</span>
+            <span class="ar-text hidden">توصيل خلال {area.responseTime}</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-stone-600">
+            <Icon name="lucide:check-circle" class="size-5 text-brand-600" />
+            <span class="en-text">Pre-order and pickup available</span>
+            <span class="ar-text hidden">الطلب المسبق والاستلام متاح</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pb-16">
+      <h2 class="font-display text-2xl text-brand-900 sm:text-3xl">
+        <span class="en-text">How We Prepare {service.name}</span>
+        <span class="ar-text hidden">كيف نحضر {service.arName}</span>
+      </h2>
+      <p class="mt-3 max-w-2xl text-stone-600">
+        <span class="en-text">Our process ensures you always receive the freshest, highest-quality produce.</span>
+        <span class="ar-text hidden">تضمن عمليتنا حصولك دائمًا على أ freshest وأجود المنتجات.</span>
+      </p>
+
+      <div class="mt-10 grid gap-6 sm:grid-cols-2">
+        {service.process.map((step, index) => (
+          <div class="relative rounded-xl border border-stone-200/80 bg-white p-6">
+            <div class="mb-4 flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-brand-50 to-brand-100 font-display text-lg text-brand-700">
+              {index + 1}
+            </div>
+            <h3 class="font-display text-lg text-brand-900">
+              <span class="en-text">{step.title}</span>
+              <span class="ar-text hidden">{step.arTitle}</span>
+            </h3>
+            <p class="mt-2 text-sm leading-relaxed text-stone-600">
+              <span class="en-text">{step.description}</span>
+              <span class="ar-text hidden">{step.arDescription}</span>
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="pb-16">
+      <h2 class="font-display text-2xl text-brand-900 sm:text-3xl">
+        <span class="en-text">Why Choose {business.name} in {area.name}?</span>
+        <span class="ar-text hidden">لماذا تختار {business.name} في {area.name}؟</span>
+      </h2>
+
+      <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-xl border border-stone-200/80 bg-white p-6 text-center">
+          <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-brand-50 to-brand-100">
+            <Icon name="lucide:leaf" class="size-6 text-brand-700" />
+          </div>
+          <h3 class="mt-4 font-semibold text-brand-900">
+            <span class="en-text">Daily Fresh</span>
+            <span class="ar-text hidden">طازج يوميًا</span>
+          </h3>
+          <p class="mt-2 text-sm text-stone-600">
+            <span class="en-text">New stock every morning. Nothing sits overnight.</span>
+            <span class="ar-text hidden">مخزون جديد كل صباح. لا يُبقى شيء حتى اليوم التالي.</span>
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-stone-200/80 bg-white p-6 text-center">
+          <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-brand-50 to-brand-100">
+            <Icon name="lucide:map-pin" class="size-6 text-brand-700" />
+          </div>
+          <h3 class="mt-4 font-semibold text-brand-900">
+            <span class="en-text">Local Shop</span>
+            <span class="ar-text hidden">متجر محلي</span>
+          </h3>
+          <p class="mt-2 text-sm text-stone-600">
+            <span class="en-text">Based in {area.name}. We know our community and our customers.</span>
+            <span class="ar-text hidden">يقع مقرنا في {area.name}. نعرف مجتمعنا وعملائنا.</span>
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-stone-200/80 bg-white p-6 text-center">
+          <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-brand-50 to-brand-100">
+            <Icon name="lucide:truck" class="size-6 text-brand-700" />
+          </div>
+          <h3 class="mt-4 font-semibold text-brand-900">
+            <span class="en-text">Fast Delivery</span>
+            <span class="ar-text hidden">توصيل سريع</span>
+          </h3>
+          <p class="mt-2 text-sm text-stone-600">
+            <span class="en-text">{area.responseTime} delivery to {area.name}. Fresh produce at your door.</span>
+            <span class="ar-text hidden">توصيل خلال {area.responseTime} إلى {area.name}. منتجات طازجة على باب منزلك.</span>
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-stone-200/80 bg-white p-6 text-center">
+          <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-brand-50 to-brand-100">
+            <Icon name="lucide:handshake" class="size-6 text-brand-700" />
+          </div>
+          <h3 class="mt-4 font-semibold text-brand-900">
+            <span class="en-text">Fair Pricing</span>
+            <span class="ar-text hidden">أسعار عادلة</span>
+          </h3>
+          <p class="mt-2 text-sm text-stone-600">
+            <span class="en-text">Competitive prices on all produce. Bulk discounts available.</span>
+            <span class="ar-text hidden">أسعار تنافسية على جميع المنتجات. خصومات الجملة متاحة.</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="pb-16">
+      <div class="rounded-2xl gradient-cta relative overflow-hidden p-8 text-center lg:p-12">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(98,180,16,0.2),_transparent_60%)]" />
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(244,124,0,0.1),_transparent_50%)]" />
+        <div class="relative">
+          <h2 class="font-display text-2xl text-white sm:text-3xl">
+            <span class="en-text">Order {service.name} in {area.name} Today</span>
+            <span class="ar-text hidden">اطلب {service.arName} في {area.name} اليوم</span>
+          </h2>
+          <p class="mx-auto mt-4 max-w-xl text-brand-200">
+            <span class="en-text">Whether you need a small grocery order or a bulk supply for your restaurant, our team is here to help. Call us or send a message now.</span>
+            <span class="ar-text hidden">سواء كنت بحاجة إلى طلب بقالة صغير أو إمداد بالجملة لمطعمك، فريقنا هنا للمساعدة. اتصل بنا أو أرسل رسالة الآن.</span>
+          </p>
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <a
+              href={business.phoneHref}
+              class="inline-flex items-center gap-2 rounded-lg gradient-warm px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:opacity-90"
+            >
+              <Icon name="lucide:phone" class="size-5" />
+              {business.phone}
+            </a>
+            <a
+              href={contactUrl()}
+              class="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition-all hover:bg-white/20"
+            >
+              <Icon name="lucide:message-square" class="size-5" />
+              <span class="en-text">Send a Message</span>
+              <span class="ar-text hidden">أرسل رسالة</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pb-8">
+      <SeoRelatedLinks area={area} service={service} />
+    </section>
+
+    <section class="pb-8">
+      <SeoServiceAreas currentArea={area} service={service} />
+    </section>
+
+    <SeoTestimonials area={area} service={service} />
+  </article>
+
+  <SeoFaq area={area} service={service} />
+</BaseLayout>

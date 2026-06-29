@@ -1,0 +1,152 @@
+---
+import type { ServiceArea } from '../data/serviceAreas';
+import type { ServiceType } from '../data/serviceTypes';
+import { getReviewsForPage, reviews } from '../data/seoContent';
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  area: ServiceArea;
+  service?: ServiceType;
+}
+
+const { area, service } = Astro.props;
+
+const pageReviews = getReviewsForPage(area.slug, service?.slug, 3);
+
+const avgRating =
+  reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+
+const aggregateSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'GroceryStore',
+  name: 'KA Fresh Fruits & Vegetables',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: avgRating.toFixed(1),
+    bestRating: '5',
+    worstRating: '1',
+    reviewCount: reviews.length,
+  },
+  review: pageReviews.map((r) => ({
+    '@type': 'Review',
+    author: { '@type': 'Person', name: r.author },
+    datePublished: r.date,
+    reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 },
+    reviewBody: r.text,
+  })),
+};
+
+function formatDate(iso: string): string {
+  const date = new Date(iso + 'T00:00:00');
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+function formatDateAr(iso: string): string {
+  const date = new Date(iso + 'T00:00:00');
+  return date.toLocaleDateString('ar-AE', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+<section class="mt-16">
+  <h2
+    class="font-display text-2xl text-stone-900"
+    data-i18n
+    data-i18n-en="What Our Customers Say"
+    data-i18n-ar="ماذا يقول عملاؤنا"
+  >
+    What Our Customers Say
+  </h2>
+
+  <div class="mt-4 flex items-center gap-2">
+    <div class="flex items-center gap-0.5">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Icon
+          name="lucide:star"
+          class:list={[
+            'size-5',
+            i < Math.round(avgRating)
+              ? 'fill-amber-400 text-amber-400'
+              : 'fill-stone-200 text-stone-200',
+          ]}
+        />
+      ))}
+    </div>
+    <span
+      class="text-sm font-semibold text-stone-800"
+      data-i18n
+      data-i18n-en={`${avgRating.toFixed(1)} out of 5`}
+      data-i18n-ar={`${avgRating.toFixed(1)} من 5`}
+    >
+      {avgRating.toFixed(1)} out of 5
+    </span>
+    <span
+      class="text-sm text-stone-500"
+      data-i18n
+      data-i18n-en={`based on ${reviews.length} reviews`}
+      data-i18n-ar={`بناءً على ${reviews.length} تقييم`}
+    >
+      based on {reviews.length} reviews
+    </span>
+  </div>
+
+  <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {pageReviews.map((review) => {
+      const fullStars = Math.floor(review.rating);
+      return (
+        <div class="rounded-xl border border-stone-200/60 bg-white p-6">
+          <div class="flex items-center gap-0.5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Icon
+                name="lucide:star"
+                class:list={[
+                  'size-4',
+                  i < fullStars
+                    ? 'fill-amber-400 text-amber-400'
+                    : 'fill-stone-200 text-stone-200',
+                ]}
+              />
+            ))}
+          </div>
+
+          <p
+            class="mt-3 text-sm leading-relaxed text-stone-600"
+            data-i18n
+            data-i18n-en={review.text}
+            data-i18n-ar={review.text}
+          >
+            {review.text}
+          </p>
+
+          <div class="mt-4 border-t border-stone-100 pt-3">
+            <span
+              class="text-sm font-semibold text-stone-800"
+              data-i18n
+              data-i18n-en={review.author}
+              data-i18n-ar={review.author}
+            >
+              {review.author}
+            </span>
+            <span
+              class="block text-xs text-stone-400"
+              data-i18n
+              data-i18n-en={formatDate(review.date)}
+              data-i18n-ar={formatDateAr(review.date)}
+            >
+              {formatDate(review.date)}
+            </span>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</section>
+
+<script type="application/ld+json" set:html={JSON.stringify(aggregateSchema)} />

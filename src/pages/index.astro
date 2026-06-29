@@ -1,0 +1,583 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Icon } from 'astro-icon/components';
+import { business, yearsInBusiness } from '../data/business';
+import { serviceTypes } from '../data/serviceTypes';
+import { serviceAreas } from '../data/serviceAreas';
+import { serviceUrl, areaUrl, contactUrl } from '../lib/urls';
+import { reviews } from '../data/seoContent';
+
+const years = yearsInBusiness();
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${business.website}/#website`,
+      url: business.website,
+      name: business.name,
+      description: business.description,
+      publisher: { '@id': `${business.website}/#business` },
+    },
+    {
+      '@type': 'GroceryStore',
+      '@id': `${business.website}/#business`,
+      name: business.name,
+      legalName: business.legalName,
+      url: business.website,
+      telephone: business.phone,
+      email: business.email,
+      description: business.description,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: business.address.street,
+        addressLocality: business.address.city,
+        addressRegion: business.address.state,
+        addressCountry: business.address.country,
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: business.coordinates.lat,
+        longitude: business.coordinates.lng,
+      },
+      openingHoursSpecification: [
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+          opens: '07:00',
+          closes: '00:00',
+        },
+      ],
+      areaServed: serviceAreas.map((area) => ({
+        '@type': 'City',
+        name: area.name,
+      })),
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Fresh Produce',
+        itemListElement: serviceTypes.map((service) => ({
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Product',
+            name: service.name,
+            description: service.shortDescription,
+          },
+        })),
+      },
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${business.website}/#webpage`,
+      url: business.website,
+      name: `${business.name} | Fresh Fruits & Vegetables in MBZ City, Abu Dhabi`,
+      isPartOf: { '@id': `${business.website}/#website` },
+      about: { '@id': `${business.website}/#business` },
+      description: business.description,
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${business.name} | Fresh Fruits & Vegetables in MBZ City, Abu Dhabi`}
+  description={business.description}
+  schema={schema}
+>
+  <!-- ============ HERO ============ -->
+  <section class="relative overflow-hidden gradient-hero">
+    <div class="absolute inset-0">
+      <img
+        src="/images/fresh-produce-display.webp"
+        alt="Fresh produce display with colorful bell peppers, tomatoes, carrots, cucumbers, and leafy greens at KA Fresh shop in Abu Dhabi"
+        class="h-full w-full object-cover opacity-15"
+        width="1376"
+        height="768"
+        loading="eager"
+      />
+    </div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(98,180,16,0.25),_transparent_60%)]" />
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(244,124,0,0.08),_transparent_50%)]" />
+
+    <div class="relative mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
+      <div class="max-w-2xl animate-fade-up">
+        <h1 class="font-display text-4xl text-white sm:text-5xl lg:text-6xl" data-i18n data-i18n-en="Fresh Fruits & Vegetables in MBZ City, Abu Dhabi" data-i18n-ar="خضروات وفواكه طازجة في مدينة محمد بن زايد، أبوظبي">
+          Fresh Fruits & Vegetables in MBZ City, Abu Dhabi
+        </h1>
+        <p class="mt-6 text-lg leading-relaxed text-brand-200" data-i18n data-i18n-en={`${business.tagline} Daily fresh produce for homes, families, restaurants, and kitchens across ${business.serviceRadius}.`} data-i18n-ar={`${business.tagline} منتجات طازجة يومياً للمنازل والعائلات والمطاعم والمطابخ في ${business.serviceRadius}.`}>
+          {business.tagline} Daily fresh produce for homes, families, restaurants, and kitchens across {business.serviceRadius}.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a
+            href={business.phoneHref}
+            class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-6 py-3 text-sm font-semibold text-brand-950 shadow-lg transition-all hover:bg-amber-400 hover:shadow-xl"
+          >
+            <Icon name="lucide:phone" class="size-5" />
+            <span data-i18n data-i18n-en={`Call ${business.phone}`} data-i18n-ar={`اتصل ${business.phone}`}>Call {business.phone}</span>
+          </a>
+          <a
+            href={contactUrl()}
+            class="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition-all hover:bg-white/20"
+          >
+            <Icon name="lucide:truck" class="size-5" />
+            <span data-i18n data-i18n-en="Order Delivery" data-i18n-ar="اطلب توصيل">Order Delivery</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STATS BAR ============ -->
+  <section class="gradient-brand-dark relative overflow-hidden">
+    <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(98,180,16,0.1)_0%,transparent_50%,rgba(244,124,0,0.08)_100%)]" />
+    <div class="mx-auto grid max-w-7xl grid-cols-2 gap-px sm:grid-cols-4 relative">
+      {[
+        { icon: 'lucide:leaf', label: 'Daily Fresh Stock', labelAr: 'مخزون يومي طازج' },
+        { icon: 'lucide:truck', label: 'Delivery Available', labelAr: 'التوصيل متاح' },
+        { icon: 'lucide:clock', label: 'Open Daily 7AM - 12AM', labelAr: 'مفتوح يومياً 7ص - 12ص' },
+        { icon: 'lucide:award', label: 'Quality Guaranteed', labelAr: 'جودة مضمونة' },
+      ].map((stat) => (
+        <div class="flex items-center justify-center gap-3 px-4 py-5">
+          <Icon name={stat.icon} class="size-5 shrink-0 text-amber-400" />
+          <span class="text-sm font-medium text-white">
+            <span class="en-text">{stat.label}</span>
+            <span class="ar-text hidden">{stat.labelAr}</span>
+          </span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ============ SERVICES GRID ============ -->
+  <section class="gradient-cream py-16 lg:py-24">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="text-center">
+        <span class="inline-flex items-center gap-2 rounded-full bg-brand-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-700">
+          <Icon name="lucide:sparkles" class="size-3.5" />
+          <span data-i18n data-i18n-en="Fresh Daily" data-i18n-ar="طازج يومياً">Fresh Daily</span>
+        </span>
+        <h2 class="mt-4 font-display text-3xl text-brand-900 sm:text-4xl" data-i18n data-i18n-en="Our Products" data-i18n-ar="منتجاتنا">
+          Our Products
+        </h2>
+        <p class="mx-auto mt-4 max-w-2xl text-stone-600" data-i18n data-i18n-en="From daily essentials to specialty items, we offer a wide selection of fresh produce sourced daily for maximum quality and flavor." data-i18n-ar="من الضروريات اليومية إلى المنتجات المتخصصة، نقدم تشكيلة واسعة من المنتجات الطازجة التي يتم sourcing يومياً لأقصى درجة من الجودة والنكهة.">
+          From daily essentials to specialty items, we offer a wide selection of fresh produce
+          sourced daily for maximum quality and flavor.
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {serviceTypes.map((service, i) => (
+          <a
+            href={serviceUrl(service.slug)}
+            class={`card-hover group relative overflow-hidden rounded-xl border border-stone-200/80 bg-white p-6 scroll-reveal scroll-reveal-delay-${Math.min(i + 1, 6)}`}
+          >
+            <div class="absolute -right-6 -top-6 size-24 rounded-full bg-gradient-to-br from-brand-50 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div class="relative">
+              <div class="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-50 to-brand-100 text-brand-700 transition-all duration-300 group-hover:from-brand-100 group-hover:to-brand-200 group-hover:scale-110 group-hover:shadow-md">
+                <Icon name={service.icon} class="size-6" />
+              </div>
+              <h3 class="mt-4 font-display text-lg text-brand-900">
+                <span class="en-text">{service.name}</span>
+                <span class="ar-text hidden">{service.arName}</span>
+              </h3>
+              <p class="mt-2 text-sm leading-relaxed text-stone-600">
+                <span class="en-text">{service.description.slice(0, 100)}...</span>
+                <span class="ar-text hidden">{service.arDescription.slice(0, 100)}...</span>
+              </p>
+              <div class="mt-4 flex items-center gap-1 text-xs font-semibold text-brand-700 opacity-0 transition-all duration-300 group-hover:opacity-100">
+                <span data-i18n data-i18n-en="Learn more" data-i18n-ar="اعرف المزيد">Learn more</span>
+                <Icon name="lucide:arrow-right" class="size-3 transition-transform duration-300 group-hover:translate-x-1 rtl-active:rotate-180" />
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW WE WORK ============ -->
+  <section class="gradient-brand-dark relative overflow-hidden py-16 lg:py-24" id="how-we-work">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(98,180,16,0.12),_transparent_60%)]" />
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(244,124,0,0.06),_transparent_50%)]" />
+    <div class="relative mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="text-center">
+        <span class="inline-flex items-center gap-2 rounded-full bg-brand-800/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-300 ring-1 ring-brand-600/30">
+          <Icon name="lucide:settings" class="size-3.5" />
+          <span data-i18n data-i18n-en="Simple Process" data-i18n-ar="عملية بسيطة">Simple Process</span>
+        </span>
+        <h2 class="mt-4 font-display text-3xl text-white sm:text-4xl" data-i18n data-i18n-en="How We Work" data-i18n-ar="كيف نعمل">
+          How We Work
+        </h2>
+        <p class="mx-auto mt-4 max-w-2xl text-brand-300" data-i18n data-i18n-en="From sourcing to your kitchen, we keep things straightforward and focused on freshness. Here is what makes KA Fresh different." data-i18n-ar="من التوريد إلى مطبخك، نحافظ على الأمور بسيطة ونركز على الطزاجة. إليك ما يميز كيه أي فريش.">
+          From sourcing to your kitchen, we keep things straightforward and focused on freshness.
+          Here is what makes KA Fresh different.
+        </p>
+      </div>
+
+      <div class="mt-14 lg:flex lg:gap-10">
+        <div class="flex gap-2 overflow-x-auto pb-4 lg:w-80 lg:shrink-0 lg:flex-col lg:gap-0 lg:overflow-visible lg:pb-0">
+          {[
+            {
+              step: 1,
+              title: 'Daily Sourcing',
+              titleAr: 'التوريد اليومي',
+              icon: 'lucide:truck',
+              summary: 'We source fresh produce every single morning.',
+              summaryAr: 'نحصل على المنتجات الطازجة كل صباح.',
+              detail: 'Our team visits local farms, regional markets, and trusted importers every morning to select the freshest fruits, vegetables, greens, and herbs available. Nothing sits overnight.',
+              detailAr: 'يزور فريقنا المزارع المحلية والأسواق الإقليمية والمستوردين الموثوقين كل صباح لاختيار أ freshest الفواكه والخضروات والأوراق الخضراء والأعشاب المتاحة. لا يُبقى شيء حتى اليوم التالي.',
+              image: '/images/green-vegetables-crates.webp',
+            },
+            {
+              step: 2,
+              title: 'Quality Inspection',
+              titleAr: 'فحص الجودة',
+              icon: 'lucide:search',
+              summary: 'Every item is checked for freshness and quality.',
+              summaryAr: 'يتم فحص كل عنصر للتأكد من طزاجته وجودته.',
+              detail: 'Each batch undergoes a strict quality check. We inspect color, texture, firmness, and aroma. Anything that does not meet our standard never makes it to the shelf.',
+              detailAr: 'تخضع كل دفعة لفحص جودة صارم. نفحص اللون والملمس والصلابة والرائحة. أي شيء لا يلبي معيارنا لا يصل أبداً إلى الرف.',
+              image: '/images/vegetables-wooden-table.webp',
+            },
+            {
+              step: 3,
+              title: 'Careful Display',
+              titleAr: 'العرض الدقيق',
+              icon: 'lucide:store',
+              summary: 'Produce is stored and displayed at optimal conditions.',
+              summaryAr: 'يتم تخزين المنتجات وعرضها في ظروف مثالية.',
+              detail: 'Temperature-controlled storage and proper hydration keep everything crisp and vibrant. Our shop layout makes it easy to find exactly what you need.',
+              detailAr: 'التخزين المُتحكم في درجة الحرارة والترطيب المناسب يحافظ على كل شيء مقرمشاً ونابضاً بالحياة. تخطيط متجرنا يسهل عليك العثور على ما تحتاجه بالضبط.',
+              image: '/images/vegetable-counter.webp',
+            },
+            {
+              step: 4,
+              title: 'Fresh to You',
+              titleAr: 'طازج إليك',
+              icon: 'lucide:heart',
+              summary: 'Shop in-store, pre-order, or get delivery.',
+              summaryAr: 'تسوّق في المتجر، اطلب مسبقاً، أو احصل على التوصيل.',
+              detail: 'Visit us on Al Ithmid St in ME10, send your list via WhatsApp for pre-order pickup, or arrange delivery across MBZ City, Musaffah, and Shabiya. Fresh produce, your way.',
+              detailAr: 'زُرنا في شارع الإثمد في منطقة ME10، أرسل قائمتك عبر واتساب للاستلام المسبق، أو رتّب للتوصيل في جميع أنحاء مدينة محمد بن زايد والمصفح والشابية. منتجات طازجة، بطريقتك.',
+              image: '/images/produce-delivery-box.webp',
+            },
+          ].map((item, i) => (
+            <button
+              type="button"
+              class={`hww-tab group flex w-64 shrink-0 items-start gap-4 rounded-xl px-5 py-4 text-left transition-all lg:w-full ${i === 0 ? 'bg-brand-800/80 ring-1 ring-brand-600/40' : 'hover:bg-brand-900'}`}
+              data-step={item.step}
+              data-title={item.title}
+              data-title-ar={item.titleAr}
+              data-detail={item.detail}
+              data-detail-ar={item.detailAr}
+              data-image={item.image}
+            >
+              <div class={`flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors ${i === 0 ? 'bg-amber-500 text-brand-950' : 'bg-brand-800 text-brand-400 group-hover:bg-brand-700'}`}>
+                <Icon name={item.icon} class="size-5" />
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class={`text-xs font-bold ${i === 0 ? 'text-amber-400' : 'text-brand-500'}`}>
+                    <span class="en-text">Step {item.step}</span>
+                    <span class="ar-text hidden">الخطوة {item.step}</span>
+                  </span>
+                </div>
+                <h3 class={`mt-0.5 text-sm font-semibold ${i === 0 ? 'text-white' : 'text-brand-200'}`}>
+                  <span class="en-text">{item.title}</span>
+                  <span class="ar-text hidden">{item.titleAr}</span>
+                </h3>
+                <p class={`mt-1 text-xs leading-relaxed ${i === 0 ? 'text-brand-300' : 'text-brand-400'}`}>
+                  <span class="en-text">{item.summary}</span>
+                  <span class="ar-text hidden">{item.summaryAr}</span>
+                </p>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <div class="mt-8 flex-1 lg:mt-0">
+          <div class="relative overflow-hidden rounded-2xl">
+            <img
+              id="hww-image"
+              src="/images/green-vegetables-crates.webp"
+              alt="Step 1: Daily Sourcing - fresh green vegetables in wooden crates"
+              class="h-64 w-full object-cover sm:h-80 lg:h-96 transition-opacity duration-300"
+              width="1408"
+              height="768"
+            />
+            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-950/90 via-brand-950/60 to-transparent px-6 pb-6 pt-20 sm:px-8 sm:pb-8 sm:pt-28">
+              <div class="flex items-center gap-3">
+                <span class="flex size-8 items-center justify-center rounded-full bg-amber-500 text-sm font-bold text-brand-950" id="hww-step-num">1</span>
+                <h3 class="font-display text-xl text-white sm:text-2xl" id="hww-title">
+                  <span class="en-text">Daily Sourcing</span>
+                  <span class="ar-text hidden">التوريد اليومي</span>
+                </h3>
+              </div>
+              <p class="mt-3 max-w-xl text-sm leading-relaxed text-brand-200 sm:text-base" id="hww-detail">
+                <span class="en-text">Our team visits local farms, regional markets, and trusted importers every morning to select the freshest fruits, vegetables, greens, and herbs available. Nothing sits overnight.</span>
+                <span class="ar-text hidden">يزور فريقنا المزارع المحلية والأسواق الإقليمية والمستوردين الموثوقين كل صباح لاختيار أ freshest الفواكه والخضروات والأوراق الخضراء والأعشاب المتاحة. لا يُبقى شيء حتى اليوم التالي.</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-4 flex items-center justify-center gap-2 lg:justify-start">
+            {[1, 2, 3, 4].map((n) => (
+              <button
+                type="button"
+                class={`hww-dot size-2.5 rounded-full transition-all ${n === 1 ? 'bg-amber-500 w-8' : 'bg-brand-700 hover:bg-brand-600'}`}
+                data-dot={n}
+                aria-label={`Go to step ${n}`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const tabs = document.querySelectorAll<HTMLButtonElement>('.hww-tab');
+    const dots = document.querySelectorAll<HTMLButtonElement>('.hww-dot');
+    const image = document.getElementById('hww-image') as HTMLImageElement;
+    const stepNum = document.getElementById('hww-step-num');
+    const title = document.getElementById('hww-title');
+    const detail = document.getElementById('hww-detail');
+
+    function getLang() {
+      return localStorage.getItem('ka-lang') || 'en';
+    }
+
+    function activateStep(step: number) {
+      const tab = Array.from(tabs).find(t => Number(t.dataset.step) === step);
+      if (!tab || !image || !stepNum || !title || !detail) return;
+
+      tabs.forEach(t => {
+        const isActive = t === tab;
+        t.classList.toggle('bg-brand-800/80', isActive);
+        t.classList.toggle('ring-1', isActive);
+        t.classList.toggle('ring-brand-600/40', isActive);
+        t.classList.toggle('hover:bg-brand-900', !isActive);
+
+        const icon = t.querySelector('div:first-child') as HTMLElement;
+        if (icon) {
+          icon.classList.toggle('bg-amber-500', isActive);
+          icon.classList.toggle('text-brand-950', isActive);
+          icon.classList.toggle('bg-brand-800', !isActive);
+          icon.classList.toggle('text-brand-400', !isActive);
+          icon.classList.toggle('group-hover:bg-brand-700', !isActive);
+        }
+
+        const stepLabel = t.querySelector('span:first-of-type') as HTMLElement;
+        if (stepLabel) {
+          stepLabel.classList.toggle('text-amber-400', isActive);
+          stepLabel.classList.toggle('text-brand-500', !isActive);
+        }
+
+        const h3 = t.querySelector('h3') as HTMLElement;
+        if (h3) {
+          h3.classList.toggle('text-white', isActive);
+          h3.classList.toggle('text-brand-200', !isActive);
+        }
+
+        const p = t.querySelector('p') as HTMLElement;
+        if (p) {
+          p.classList.toggle('text-brand-300', isActive);
+          p.classList.toggle('text-brand-400', !isActive);
+        }
+      });
+
+      dots.forEach(d => {
+        const isActive = Number(d.dataset.dot) === step;
+        d.classList.toggle('bg-amber-500', isActive);
+        d.classList.toggle('w-8', isActive);
+        d.classList.toggle('bg-brand-700', !isActive);
+      });
+
+      image.style.opacity = '0';
+      setTimeout(() => {
+        image.src = tab.dataset.image || '';
+        const isAr = getLang() === 'ar';
+        image.alt = `Step ${step}: ${isAr ? tab.dataset.titleAr : tab.dataset.title}`;
+        image.style.opacity = '1';
+      }, 150);
+
+      stepNum.textContent = String(step);
+
+      const isAr = getLang() === 'ar';
+      const titleText = isAr ? tab.dataset.titleAr : tab.dataset.title;
+      const detailText = isAr ? tab.dataset.detailAr : tab.dataset.detail;
+
+      if (title) {
+        const enSpan = title.querySelector('.en-text');
+        const arSpan = title.querySelector('.ar-text');
+        if (enSpan && arSpan) {
+          enSpan.textContent = tab.dataset.title || '';
+          arSpan.textContent = tab.dataset.titleAr || '';
+        } else {
+          title.textContent = titleText || '';
+        }
+      }
+      if (detail) {
+        const enSpan = detail.querySelector('.en-text');
+        const arSpan = detail.querySelector('.ar-text');
+        if (enSpan && arSpan) {
+          enSpan.textContent = tab.dataset.detail || '';
+          arSpan.textContent = tab.dataset.detailAr || '';
+        } else {
+          detail.textContent = detailText || '';
+        }
+      }
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        activateStep(Number(tab.dataset.step));
+      });
+    });
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        activateStep(Number(dot.dataset.dot));
+      });
+    });
+
+    let currentStep = 1;
+    let autoTimer = setInterval(() => {
+      currentStep = currentStep >= 4 ? 1 : currentStep + 1;
+      activateStep(currentStep);
+    }, 6000);
+
+    const section = document.getElementById('how-we-work');
+    section?.addEventListener('click', () => {
+      clearInterval(autoTimer);
+      const clickedTab = document.querySelector('.hww-tab.bg-brand-800\\/80');
+      if (clickedTab) {
+        currentStep = Number((clickedTab as HTMLElement).dataset.step);
+      }
+      autoTimer = setInterval(() => {
+        currentStep = currentStep >= 4 ? 1 : currentStep + 1;
+        activateStep(currentStep);
+      }, 15000);
+    });
+  </script>
+
+  <!-- ============ REVIEWS STRIP ============ -->
+  <section class="border-y border-stone-200/60 gradient-subtle py-14 lg:py-20">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="scroll-reveal">
+        <h2 class="font-display text-2xl text-brand-900 sm:text-3xl" data-i18n data-i18n-en="What Our Customers Say" data-i18n-ar="آراء عملائنا">
+          What Our Customers Say
+        </h2>
+        <div class="mt-2 flex items-center gap-2">
+          <div class="flex items-center gap-0.5">
+            {[1, 2, 3, 4, 5].map(() => (
+              <Icon name="lucide:star" class="size-5 fill-amber-400 text-amber-400" />
+            ))}
+          </div>
+          <span class="text-sm font-medium text-stone-600">
+            {(reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)} average from {reviews.length} reviews
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 flex gap-5 overflow-x-auto px-5 pb-4 lg:px-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden]">
+      <div class="mx-auto flex max-w-7xl gap-5">
+        {reviews.map((review, i) => (
+          <div class={`w-80 shrink-0 rounded-xl border border-stone-200/60 bg-white p-6 shadow-sm transition-all duration-500 hover:shadow-lg hover:-translate-y-1 scroll-reveal scroll-reveal-delay-${Math.min(i + 1, 5)}`}>
+            <div class="flex items-center gap-0.5">
+              {Array.from({ length: 5 }).map((_, si) => (
+                <Icon
+                  name="lucide:star"
+                  class={`size-4 ${si < Math.floor(review.rating) ? 'fill-amber-400 text-amber-400' : 'text-stone-200'}`}
+                />
+              ))}
+            </div>
+            <p class="mt-3 text-sm leading-relaxed text-stone-600 line-clamp-4">
+              "{review.text}"
+            </p>
+            <div class="mt-4 flex items-center gap-3">
+              <div class="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-brand-100 to-brand-200 text-sm font-bold text-brand-800">
+                {review.author.charAt(0)}
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-stone-800">{review.author}</p>
+                <p class="text-xs text-stone-400">{new Date(review.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ AREAS SECTION ============ -->
+  <section class="gradient-cream py-16 lg:py-24">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="text-center">
+        <h2 class="font-display text-3xl text-brand-900 sm:text-4xl" data-i18n data-i18n-en="Areas We Serve" data-i18n-ar="مناطق التوصيل">
+          Areas We Serve
+        </h2>
+        <p class="mx-auto mt-4 max-w-2xl text-stone-600" data-i18n data-i18n-en={`Proudly serving ${business.serviceRadius} with fresh produce, delivery, and friendly local service.`} data-i18n-ar={`نفتخر بخدمة ${business.serviceRadius} بمنتجات طازجة وتوصيل وخدمة محلية ودودة.`}>
+          Proudly serving {business.serviceRadius} with fresh produce,
+          delivery, and friendly local service.
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {serviceAreas.map((area, i) => (
+          <a
+            href={areaUrl(area.slug)}
+            class={`card-hover group rounded-xl border border-stone-200 bg-white p-6 scroll-reveal scroll-reveal-delay-${Math.min(i + 1, 6)}`}
+          >
+            <div class="flex items-center gap-3">
+              <div class="flex size-10 items-center justify-center rounded-lg bg-gradient-to-br from-brand-50 to-brand-100 transition-all duration-300 group-hover:from-brand-100 group-hover:to-brand-200 group-hover:scale-110">
+                <Icon name="lucide:map-pin" class="size-5 text-brand-600" />
+              </div>
+              <h3 class="font-display text-lg text-brand-900">{area.name}</h3>
+            </div>
+            <p class="mt-2 text-sm text-stone-500">{area.county}</p>
+            <div class="mt-3 flex items-center gap-1.5 text-sm text-stone-600">
+              <Icon name="lucide:clock" class="size-4 text-brand-500" />
+              <span data-i18n data-i18n-en={`${area.responseTime} delivery`} data-i18n-ar={`توصيل ${area.responseTime}`}>{area.responseTime} delivery</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BANNER ============ -->
+  <section class="gradient-cta relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(98,180,16,0.15),_transparent_60%)]" />
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(244,124,0,0.08),_transparent_50%)]" />
+    <div class="relative mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-16">
+      <div class="flex flex-col items-center gap-6 text-center sm:flex-row sm:justify-between sm:text-left">
+        <div>
+          <h2 class="font-display text-3xl text-white" data-i18n data-i18n-en="Need Fresh Produce?" data-i18n-ar="تحتاج منتجات طازجة؟">Need Fresh Produce?</h2>
+          <p class="mt-2 text-brand-200" data-i18n data-i18n-en="Call us now or send a message. Fresh fruits and vegetables delivered across MBZ City, Musaffah, and Shabiya." data-i18n-ar="اتصل بنا الآن أو أرسل رسالة. فواكه وخضروات طازجة تُوصل إلى مدينة محمد بن زايد والمصفح وشابية.">
+            Call us now or send a message. Fresh fruits and vegetables delivered across MBZ City, Musaffah, and Shabiya.
+          </p>
+        </div>
+        <div class="flex shrink-0 flex-wrap gap-4">
+          <a
+            href={business.phoneHref}
+            class="inline-flex items-center gap-2 rounded-lg gradient-warm px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:opacity-90"
+          >
+            <Icon name="lucide:phone" class="size-5" />
+            {business.phone}
+          </a>
+          <a
+            href={contactUrl()}
+            class="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition-all hover:bg-white/20"
+            data-i18n
+            data-i18n-en="Contact Us"
+            data-i18n-ar="اتصل بنا"
+          >
+            Contact Us
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

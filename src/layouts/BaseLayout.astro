@@ -1,0 +1,122 @@
+---
+import SEO from '../components/SEO.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const { title, description, canonicalUrl, ogImage, schema, noindex } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Noto+Sans+Arabic:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <SEO
+      title={title}
+      description={description}
+      canonicalUrl={canonicalUrl}
+      ogImage={ogImage}
+      schema={schema}
+      noindex={noindex}
+    />
+
+    {import.meta.env.PROD && (
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX" />
+      <script is:inline>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+      </script>
+    )}
+  </head>
+
+  <body class="flex min-h-screen flex-col bg-stone-50 text-stone-900 antialiased font-body">
+    <Header />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+
+    <script is:inline>
+      (function() {
+        // Language init
+        var lang = localStorage.getItem('ka-lang') || 'en';
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        if (lang === 'ar') document.body.classList.add('rtl-active');
+
+        // Scroll reveal
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+        function initReveal() {
+          document.querySelectorAll('.scroll-reveal').forEach(function(el) {
+            observer.observe(el);
+          });
+        }
+
+        function applyLang() {
+          var l = localStorage.getItem('ka-lang') || 'en';
+          var isAr = l === 'ar';
+          document.querySelectorAll('[data-i18n]').forEach(function(el) {
+            var text = isAr ? el.getAttribute('data-i18n-ar') : el.getAttribute('data-i18n-en');
+            if (text !== null) {
+              if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.placeholder = text;
+              } else {
+                el.textContent = text;
+              }
+            }
+          });
+          document.querySelectorAll('[data-i18n-html]').forEach(function(el) {
+            var html = isAr ? el.getAttribute('data-i18n-ar') : el.getAttribute('data-i18n-en');
+            if (html !== null) el.innerHTML = html;
+          });
+          // Toggle bilingual spans for dynamic content
+          document.querySelectorAll('.en-text').forEach(function(el) {
+            el.classList.toggle('hidden', isAr);
+          });
+          document.querySelectorAll('.ar-text').forEach(function(el) {
+            el.classList.toggle('hidden', !isAr);
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', function() { initReveal(); applyLang(); });
+        } else {
+          initReveal();
+          applyLang();
+        }
+      })();
+    </script>
+  </body>
+</html>

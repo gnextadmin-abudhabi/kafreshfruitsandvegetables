@@ -1,0 +1,177 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { blogUrl } from '../../lib/urls';
+import { business } from '../../data/business';
+import { Icon } from 'astro-icon/components';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime()
+);
+
+const categoryColors: Record<string, { bg: string; text: string }> = {
+  emergency: { bg: 'bg-red-100', text: 'text-red-700' },
+  tips: { bg: 'bg-brand-100', text: 'text-brand-700' },
+  maintenance: { bg: 'bg-amber-100', text: 'text-amber-700' },
+  news: { bg: 'bg-stone-200', text: 'text-stone-700' },
+};
+
+function formatDate(iso: string): string {
+  const date = new Date(iso + 'T00:00:00');
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+function formatDateAr(iso: string): string {
+  const date = new Date(iso + 'T00:00:00');
+  return date.toLocaleDateString('ar-AE', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+function categoryAr(cat: string): string {
+  const map: Record<string, string> = {
+    emergency: 'عاجل',
+    tips: 'نصائح',
+    maintenance: 'صيانة',
+    news: 'أخبار',
+  };
+  return map[cat] || cat;
+}
+
+function readingTimeAr(rt: string | undefined): string {
+  if (!rt) return '';
+  return rt.replace('min read', 'دقيقة للقراءة').replace('mins read', 'دقيقة للقراءة');
+}
+---
+
+<BaseLayout
+  title={`Fresh Produce Tips & News | ${business.name}`}
+  description="Fresh produce tips, seasonal guides, and local news from KA Fresh Fruits & Vegetables. Expert advice for healthy eating in Abu Dhabi."
+>
+  <Breadcrumbs crumbs={[{ label: 'Blog' }]} />
+
+  <section class="gradient-cream">
+    <div class="mx-auto max-w-7xl px-5 py-10 lg:px-8 lg:py-16">
+      <div class="text-center">
+        <span
+          class="inline-flex items-center gap-2 rounded-full bg-brand-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-700"
+          data-i18n
+          data-i18n-en="Blog"
+          data-i18n-ar="المدونة"
+        >
+          <Icon name="lucide:newspaper" class="size-3.5" />
+          Blog
+        </span>
+        <h1
+          class="mt-4 font-display text-3xl text-brand-900 sm:text-4xl lg:text-5xl"
+          data-i18n
+          data-i18n-en="Fresh Produce Tips & News"
+          data-i18n-ar="نصائح وأخبار المنتجات الطازجة"
+        >
+          Fresh Produce Tips & News
+        </h1>
+        <p
+          class="mx-auto mt-4 max-w-2xl text-stone-600"
+          data-i18n
+          data-i18n-en={`Practical advice, seasonal guides, and local produce news from the team at ${business.name}. Stay informed and eat fresher.`}
+          data-i18n-ar={`نصائح عملية وأدلة موسمية وأخبار المنتجات المحلية من فريق ${business.name}. كن على اطلاع وتمتع بأطعمة أكثر طراوة.`}
+        >
+          Practical advice, seasonal guides, and local produce news from the team at
+          {business.name}. Stay informed and eat fresher.
+        </p>
+      </div>
+
+      {posts.length === 0 ? (
+        <p
+          class="mt-12 text-center text-stone-500"
+          data-i18n
+          data-i18n-en="No blog posts yet. Check back soon for fresh produce tips and news."
+          data-i18n-ar="لا توجد مقالات بعد. تعمّد زيارتنا قريبًا للحصول على نصائح وأخبار المنتجات الطازجة."
+        >
+          No blog posts yet. Check back soon for fresh produce tips and news.
+        </p>
+      ) : (
+        <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => {
+            const colors = categoryColors[post.data.category] || categoryColors.news;
+            return (
+              <a
+                href={blogUrl(post.id)}
+                class="card-hover group flex flex-col rounded-xl border border-stone-200/80 bg-white"
+              >
+                <div class="flex flex-1 flex-col p-6">
+                  <div class="flex items-center gap-3">
+                    <span
+                      class={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${colors.bg} ${colors.text}`}
+                      data-i18n
+                      data-i18n-en={post.data.category}
+                      data-i18n-ar={categoryAr(post.data.category)}
+                    >
+                      {post.data.category}
+                    </span>
+                    {post.data.readingTime && (
+                      <span
+                        class="flex items-center gap-1 text-xs text-stone-400"
+                        data-i18n
+                        data-i18n-en={post.data.readingTime}
+                        data-i18n-ar={readingTimeAr(post.data.readingTime)}
+                      >
+                        <Icon name="lucide:clock" class="size-3" />
+                        {post.data.readingTime}
+                      </span>
+                    )}
+                  </div>
+
+                  <h2
+                    class="mt-3 font-display text-lg text-brand-900 group-hover:text-brand-700"
+                    data-i18n
+                    data-i18n-en={post.data.title}
+                    data-i18n-ar={post.data.titleAr ?? post.data.title}
+                  >
+                    {post.data.title}
+                  </h2>
+
+                  <p
+                    class="mt-2 flex-1 text-sm leading-relaxed text-stone-600"
+                    data-i18n
+                    data-i18n-en={post.data.description}
+                    data-i18n-ar={post.data.descriptionAr ?? post.data.description}
+                  >
+                    {post.data.description}
+                  </p>
+
+                  <div class="mt-4 flex items-center gap-2 border-t border-stone-100 pt-4 text-xs text-stone-400">
+                    <Icon name="lucide:calendar" class="size-3.5" />
+                    <time
+                      datetime={post.data.publishDate}
+                      data-i18n
+                      data-i18n-en={formatDate(post.data.publishDate)}
+                      data-i18n-ar={formatDateAr(post.data.publishDate)}
+                    >
+                      {formatDate(post.data.publishDate)}
+                    </time>
+                    <span class="text-stone-300">|</span>
+                    <span
+                      data-i18n
+                      data-i18n-en={post.data.author}
+                      data-i18n-ar={post.data.author}
+                    >
+                      {post.data.author}
+                    </span>
+                  </div>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

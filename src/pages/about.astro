@@ -1,0 +1,243 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { Icon } from 'astro-icon/components';
+import { business, yearsInBusiness } from '../data/business';
+import { serviceAreas } from '../data/serviceAreas';
+import { areaUrl, contactUrl } from '../lib/urls';
+
+const years = yearsInBusiness();
+
+const areaNameAr: Record<string, string> = {
+  'Mohammed Bin Zayed City': 'مدينة محمد بن زايد',
+  'MBZ City': 'مدينة محمد بن زايد',
+  'ME10': 'مِي 10',
+  'Musaffah': 'مصفح',
+  'Mussafah Shabiya': 'الشابية (مصفح)',
+  'Shabiya': 'الشابية',
+  'Shabiya 10': 'الشابية 10',
+  'Shabiya 11': 'الشابية 11',
+  'Shabiya 12': 'الشابية 12',
+  'Abu Dhabi': 'أبوظبي',
+};
+---
+
+<BaseLayout
+  title={`About ${business.name} | Fresh Produce Shop in MBZ City, Abu Dhabi`}
+  description={`Learn about ${business.name}, a fresh produce shop in MBZ City, Abu Dhabi. Daily fresh fruits, vegetables, greens, herbs, and delivery across Mohammed Bin Zayed City, Musaffah, and Shabiya.`}
+>
+  <Breadcrumbs crumbs={[{ label: 'About' }]} />
+
+  <section class="gradient-cream py-12 lg:py-16">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="max-w-3xl animate-fade-up">
+        <span class="inline-flex items-center gap-2 rounded-full bg-brand-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-700" data-i18n data-i18n-en="Our Story" data-i18n-ar="قصتنا">
+          <Icon name="lucide:heart" class="size-3.5" />
+          Our Story
+        </span>
+        <h1 class="mt-4 font-display text-4xl text-brand-900 sm:text-5xl" data-i18n data-i18n-en={`About ${business.name}`} data-i18n-ar={`عن ${business.name}`}>
+          About {business.name}
+        </h1>
+        <p class="mt-4 text-lg leading-relaxed text-stone-600" data-i18n data-i18n-en="Your neighborhood fresh produce shop in Mohammed Bin Zayed City, Abu Dhabi. We bring farm-fresh quality to every home, restaurant, and kitchen we serve." data-i18n-ar="متجر الخضروات والفواكه الطازجة في حيّك في مدينة محمد بن زايد، أبوظبي. نقدّم لكم جودة المزرعة الطازجة لكل منزل ومطعم ومطبخ نخدمه.">
+          Your neighborhood fresh produce shop in Mohammed Bin Zayed City, Abu Dhabi.
+          We bring farm-fresh quality to every home, restaurant, and kitchen we serve.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 lg:pb-24">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
+        <div class="order-2 lg:order-1">
+          <div class="overflow-hidden rounded-xl border border-stone-200">
+            <img
+              src="/images/produce-display.webp"
+              alt="Vegetables arranged in organized produce display with labeled sections at KA Fresh shop"
+              class="h-64 w-full object-cover sm:h-80"
+              width="1376"
+              height="768"
+              loading="lazy"
+            />
+          </div>
+        </div>
+        <div class="prose-editorial order-1 lg:order-2">
+          <h2 data-i18n data-i18n-en="Our Story" data-i18n-ar="قصتنا">Our Story</h2>
+          <p data-i18n data-i18n-en={`${business.name} was established in ${business.yearEstablished} with a clear mission: to provide the freshest, highest-quality fruits and vegetables to the communities of ${business.serviceRadius}.`} data-i18n-ar={`تأسست ${business.name} عام ${business.yearEstablished} بمهمة واضحة: توفير أطهر وأجود الفواكه والخضروات لمجتمعات ${business.serviceRadius}.`}>
+            {business.name} was established in {business.yearEstablished} with a clear mission:
+            to provide the freshest, highest-quality fruits and vegetables to the communities of
+            {business.serviceRadius}.
+          </p>
+          <p data-i18n data-i18n-en="We believe that everyone deserves access to fresh, nutritious produce. That is why we source daily from local farms, regional markets, and trusted importers to bring you the best selection at fair prices." data-i18n-ar="نؤمن بأن الجميع يستحقّ الوصول إلى منتجات طازجة ومغذّية. ولذلك نحصل يوميًا على إمداداتنا من المزارع المحلية والأسواق الإقليمية والمستوردين الموثوقين لنقدّم لكم أفضل الخيارات بأسعار عادلة.">
+            We believe that everyone deserves access to fresh, nutritious produce. That is why we
+            source daily from local farms, regional markets, and trusted importers to bring you
+            the best selection at fair prices.
+          </p>
+          <p data-i18n data-i18n-en="From home cooks preparing family meals to restaurant chefs demanding the finest ingredients, we serve everyone with the same commitment to freshness and quality. Our customers know that when they shop at KA Fresh, they are getting produce that was hand-selected just hours before." data-i18n-ar="من الطبّاخين المنزليّين الذين يُعدّون وجبات العائلة إلى طبّاخي المطاعم الذين يطلبون أجود المكوّنات، نخدم الجميع بنفس الالتزام بالطراوة والجودة. يعلم زبائننا أنّهم عند التسوّق في كيه أي فريش، يحصلون على منتجات تمّ اختيارها يدويًا قبل ساعات فقط.">
+            From home cooks preparing family meals to restaurant chefs demanding the finest
+            ingredients, we serve everyone with the same commitment to freshness and quality.
+            Our customers know that when they shop at KA Fresh, they are getting produce that
+            was hand-selected just hours before.
+          </p>
+          <p data-i18n data-i18n-en="Whether you visit our shop on Al Ithmid St, pre-order for quick pickup, or arrange delivery to your door, we make it easy to enjoy fresh produce every day." data-i18n-ar="سواء زرتم متجرنا في شارع الإثميد، أو طلبتم مسبقًا للاستلام السريع، أو رتّبتم التوصيل إلى باب منزلكم، نجعل من السهل الاستمتاع بالمنتجات الطازجة كل يوم.">
+            Whether you visit our shop on Al Ithmid St, pre-order for quick pickup, or arrange
+            delivery to your door, we make it easy to enjoy fresh produce every day.
+          </p>
+        </div>
+
+        <div>
+          <div class="rounded-xl border border-stone-200 bg-white p-8">
+            <div class="flex items-center gap-4">
+              <div class="flex size-16 items-center justify-center rounded-full bg-brand-100">
+                <Icon name="lucide:store" class="size-8 text-brand-700" />
+              </div>
+              <div>
+                <h3 class="font-display text-xl text-brand-900" data-i18n data-i18n-en={business.name} data-i18n-ar={business.name}>{business.name}</h3>
+                <p class="text-sm text-stone-500" data-i18n data-i18n-en="Fresh Produce Shop, MBZ City" data-i18n-ar="متجر منتجات طازجة، مدينة محمد بن زايد">Fresh Produce Shop, MBZ City</p>
+              </div>
+            </div>
+            <div class="mt-6 space-y-3 text-sm leading-relaxed text-stone-600">
+              <p data-i18n data-i18n-en="Located on Al Ithmid St in ME10, Mohammed Bin Zayed City, we are a locally owned fresh produce shop serving homes, restaurants, cafeterias, and food businesses across Abu Dhabi." data-i18n-ar="يقع متجرنا في شارع الإثميد في منطقة مِي 10، مدينة محمد بن زايد، وهو متجر منتجات طازجة مملوك محليًا يخدم المنازل والمطاعم والمقاصف والشركات الغذائية في جميع أنحاء أبوظبي.">
+                Located on Al Ithmid St in ME10, Mohammed Bin Zayed City, we are a
+                locally owned fresh produce shop serving homes, restaurants, cafeterias,
+                and food businesses across Abu Dhabi.
+              </p>
+              <p data-i18n data-i18n-en="Our team is passionate about fresh food and dedicated to providing exceptional service. We know our regular customers by name and take pride in helping them find exactly what they need." data-i18n-ar="فريقنا شغوف بالطعام الطازج ومخصّص لتقديم خدمة استثنائية. نعرف زبائننا الدائمين بأسمائهم ونفتخر بمساعدتهم في العثور على ما يحتاجونه بالضبط.">
+                Our team is passionate about fresh food and dedicated to providing
+                exceptional service. We know our regular customers by name and take pride
+                in helping them find exactly what they need.
+              </p>
+            </div>
+            <div class="mt-6 border-t border-stone-100 pt-6">
+              <p class="text-xs font-medium uppercase tracking-wider text-stone-400" data-i18n data-i18n-en="Credentials" data-i18n-ar="الاعتمادات">Credentials</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700" data-i18n data-i18n-en="Registered L.L.C" data-i18n-ar="شركة ذات مسؤولية محدودة مسجّلة">
+                  <Icon name="lucide:badge-check" class="size-3.5" />
+                  Registered L.L.C
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700" data-i18n data-i18n-en="Licensed by ADRLA" data-i18n-ar="مرخّصة من قبل دائرة التسجيل والترخيص في أبوظبي">
+                  <Icon name="lucide:shield-check" class="size-3.5" />
+                  Licensed by ADRLA
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="gradient-subtle py-16 lg:py-24">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <h2 class="text-center font-display text-3xl text-brand-900" data-i18n data-i18n-en="Why Customers Trust Us" data-i18n-ar="لماذا يثق بنا زبائننا">
+        Why Customers Trust Us
+      </h2>
+
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          {
+            icon: 'lucide:leaf',
+            title: 'Daily Fresh Stock',
+            titleAr: 'مخزون يومي طازج',
+            detail: 'We source fresh produce every morning. Nothing sits overnight.',
+            detailAr: 'نحصل على المنتجات الطازجة كل صباح. لا نُبقي أيّ شيء حتى اليوم التالي.',
+          },
+          {
+            icon: 'lucide:truck',
+            title: 'Delivery Available',
+            titleAr: 'التوصيل متاح',
+            detail: 'Fresh produce delivered across MBZ City, Musaffah, and Shabiya.',
+            detailAr: 'توصيل المنتجات الطازجة في جميع أنحاء مدينة محمد بن زايد ومصفح والشابية.',
+          },
+          {
+            icon: 'lucide:handshake',
+            title: 'Fair Pricing',
+            titleAr: 'أسعار عادلة',
+            detail: 'Competitive prices on all fruits, vegetables, greens, and herbs.',
+            detailAr: 'أسعار تنافسية على جميع الفواكه والخضروات والخضراوات الورقية والأعشاب.',
+          },
+          {
+            icon: 'lucide:heart',
+            title: 'Local Service',
+            titleAr: 'خدمة محلية',
+            detail: 'A neighborhood shop that knows and cares about its community.',
+            detailAr: 'متجر حيّ يعرف مجتمعه ويهتم به.',
+          },
+        ].map((item, i) => (
+          <div class={`rounded-xl border border-stone-200/80 bg-white p-6 animate-fade-up stagger-${i + 1}`}>
+            <div class="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-50 to-brand-100 text-brand-700">
+              <Icon name={item.icon} class="size-6" />
+            </div>
+            <h3 class="mt-4 font-display text-lg text-brand-900" data-i18n data-i18n-en={item.title} data-i18n-ar={item.titleAr}>{item.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-stone-600" data-i18n data-i18n-en={item.detail} data-i18n-ar={item.detailAr}>{item.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="gradient-cream py-16 lg:py-24">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <h2 class="text-center font-display text-3xl text-brand-900" data-i18n data-i18n-en="Communities We Serve" data-i18n-ar="المجتمعات التي نخدمها">
+        Communities We Serve
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-center text-stone-600" data-i18n data-i18n-en="We provide fresh produce and delivery to every corner of our service area. Here are the communities where we are most active." data-i18n-ar="نقدّم المنتجات الطازجة والتوصيل إلى كل ركن في منطقة خدمتنا. إليكم المجتمعات التي نحن الأكثر نشاطًا فيها.">
+        We provide fresh produce and delivery to every corner of our service area.
+        Here are the communities where we are most active.
+      </p>
+
+      <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {serviceAreas.map((area) => (
+          <a
+            href={areaUrl(area.slug)}
+            class="card-hover flex items-center gap-3 rounded-xl border border-stone-200/80 bg-white px-5 py-4 transition-colors"
+          >
+            <div class="flex size-10 items-center justify-center rounded-lg bg-gradient-to-br from-brand-50 to-brand-100">
+              <Icon name="lucide:map-pin" class="size-5 shrink-0 text-brand-600" />
+            </div>
+            <div>
+              <span class="font-medium text-brand-900" data-i18n data-i18n-en={area.name} data-i18n-ar={areaNameAr[area.name] || area.name}>{area.name}</span>
+              <span class="block text-xs text-stone-500" data-i18n data-i18n-en={area.county} data-i18n-ar="أبوظبي">{area.county}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="gradient-cta relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(98,180,16,0.15),_transparent_60%)]" />
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(244,124,0,0.08),_transparent_50%)]" />
+    <div class="relative mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-16">
+      <div class="flex flex-col items-center gap-6 text-center sm:flex-row sm:justify-between sm:text-left">
+        <div>
+          <h2 class="font-display text-3xl text-white" data-i18n data-i18n-en="Ready to Shop Fresh?" data-i18n-ar="مستعدّ للتسوّق الطازج؟">Ready to Shop Fresh?</h2>
+          <p class="mt-2 text-brand-200" data-i18n data-i18n-en="Visit our shop, place a pre-order, or arrange delivery today." data-i18n-ar="زُر متجرنا، قدّم طلبًا مسبقًا، أو رتّب للتوصيل اليوم.">
+            Visit our shop, place a pre-order, or arrange delivery today.
+          </p>
+        </div>
+        <div class="flex shrink-0 flex-wrap gap-4">
+          <a
+            href={business.phoneHref}
+            class="inline-flex items-center gap-2 rounded-lg gradient-warm px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:opacity-90"
+            data-i18n
+            data-i18n-en={business.phone}
+            data-i18n-ar={business.phone}
+          >
+            <Icon name="lucide:phone" class="size-5" />
+            {business.phone}
+          </a>
+          <a
+            href={contactUrl()}
+            class="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-white/20"
+            data-i18n
+            data-i18n-en="Contact Us"
+            data-i18n-ar="اتصل بنا"
+          >
+            Contact Us
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

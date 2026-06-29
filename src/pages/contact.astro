@@ -1,0 +1,320 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { Icon } from 'astro-icon/components';
+import { business } from '../data/business';
+import { serviceTypes } from '../data/serviceTypes';
+import { serviceAreas } from '../data/serviceAreas';
+
+const areaNameAr: Record<string, string> = {
+  'Mohammed Bin Zayed City': 'مدينة محمد بن زايد',
+  'MBZ City': 'مدينة محمد بن زايد',
+  'ME10': 'مِي 10',
+  'Musaffah': 'مصفح',
+  'Mussafah Shabiya': 'الشابية (مصفح)',
+  'Shabiya': 'الشابية',
+  'Shabiya 10': 'الشابية 10',
+  'Shabiya 11': 'الشابية 11',
+  'Shabiya 12': 'الشابية 12',
+  'Abu Dhabi': 'أبوظبي',
+};
+
+const serviceNameAr: Record<string, string> = {
+  'Fresh Fruits': 'فواكه طازجة',
+  'Fresh Vegetables': 'خضروات طازجة',
+  'Leafy Greens': 'خضروات ورقية',
+  'Fresh Herbs': 'أعشاب طازجة',
+  'Seasonal Produce': 'منتجات موسمية',
+  'Local & Imported Produce': 'منتجات محلية ومستوردة',
+  'Fresh Produce Delivery': 'توصيل المنتجات الطازجة',
+  'Bulk Fruit & Vegetable Orders': 'طلبات الفواكه والخضروات بالجملة',
+  'Restaurant & Kitchen Supply': 'إمداد المطاعم والمطابخ',
+  'Pre-Order & Pickup': 'الطلب المسبق والاستلام',
+};
+---
+
+<BaseLayout
+  title={`Contact Us | ${business.name}`}
+  description={`Get in touch with ${business.name} for fresh produce orders, delivery, and bulk supply. Call ${business.phone} or fill out our contact form. Serving ${business.serviceRadius}.`}
+>
+  <Breadcrumbs crumbs={[{ label: 'Contact' }]} />
+
+  <section class="gradient-cream py-12 lg:py-16">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="max-w-3xl animate-fade-up">
+        <span class="inline-flex items-center gap-2 rounded-full bg-brand-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-700" data-i18n data-i18n-en="Get in Touch" data-i18n-ar="تواصل معنا">
+          <Icon name="lucide:message-square" class="size-3.5" />
+          Get in Touch
+        </span>
+        <h1 class="mt-4 font-display text-4xl text-brand-900 sm:text-5xl" data-i18n data-i18n-en={`Contact ${business.name}`} data-i18n-ar={`تواصل مع ${business.name}`}>
+          Contact {business.name}
+        </h1>
+        <p class="mt-4 text-lg leading-relaxed text-stone-600" data-i18n data-i18n-en="Have a question about our products, need to place an order, or want to arrange delivery? Reach out by phone, WhatsApp, email, or use the form below." data-i18n-ar="هل لديك سؤال عن منتجاتنا، أو تحتاج إلى تقديم طلب، أو ترغب في ترتيب التوصيل؟ تواصل معنا عبر الهاتف أو واتساب أو البريد الإلكتروني أو استخدم النموذج أدناه.">
+          Have a question about our products, need to place an order, or want to arrange delivery?
+          Reach out by phone, WhatsApp, email, or use the form below.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 lg:pb-24">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-12 lg:grid-cols-5 lg:gap-16">
+        <div class="lg:col-span-3">
+          <div class="rounded-xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-sm">
+            <h2 class="font-display text-2xl text-brand-900" data-i18n data-i18n-en="Send Us a Message" data-i18n-ar="أرسل لنا رسالة">Send Us a Message</h2>
+            <p class="mt-2 text-sm text-stone-500" data-i18n data-i18n-en="Fill out the form and we will get back to you as soon as possible." data-i18n-ar="املأ النموذج وسنعود إليك في أقرب وقت ممكن.">
+              Fill out the form and we will get back to you as soon as possible.
+            </p>
+
+            <form action="#" method="POST" class="mt-8 space-y-6">
+              <div class="grid gap-6 sm:grid-cols-2">
+                <div>
+                  <label for="name" class="block text-sm font-medium text-stone-700" data-i18n data-i18n-en="Full Name *" data-i18n-ar="الاسم الكامل *">
+                    Full Name <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    placeholder="Your name"
+                    class="mt-1.5 w-full rounded-lg border border-stone-300 px-4 py-2.5 text-sm text-stone-900 placeholder-stone-400 transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+                    data-i18n
+                    data-i18n-en="Your name"
+                    data-i18n-ar="اسمك"
+                  />
+                </div>
+                <div>
+                  <label for="email" class="block text-sm font-medium text-stone-700" data-i18n data-i18n-en="Email *" data-i18n-ar="البريد الإلكتروني *">
+                    Email <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    placeholder="you@example.com"
+                    class="mt-1.5 w-full rounded-lg border border-stone-300 px-4 py-2.5 text-sm text-stone-900 placeholder-stone-400 transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+                    data-i18n
+                    data-i18n-en="you@example.com"
+                    data-i18n-ar="بريدك@مثال.كوم"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="phone" class="block text-sm font-medium text-stone-700" data-i18n data-i18n-en="Phone Number" data-i18n-ar="رقم الهاتف">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  placeholder="+971 XX XXX XXXX"
+                  class="mt-1.5 w-full rounded-lg border border-stone-300 px-4 py-2.5 text-sm text-stone-900 placeholder-stone-400 transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+                  data-i18n
+                  data-i18n-en="+971 XX XXX XXXX"
+                  data-i18n-ar="+971 XX XXX XXXX"
+                />
+              </div>
+
+              <div class="grid gap-6 sm:grid-cols-2">
+                <div>
+                  <label for="service" class="block text-sm font-medium text-stone-700" data-i18n data-i18n-en="Product Interest" data-i18n-ar="المنتج المطلوب">
+                    Product Interest
+                  </label>
+                  <select
+                    id="service"
+                    name="service"
+                    class="mt-1.5 w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+                  >
+                    <option value="" data-i18n data-i18n-en="Select a product" data-i18n-ar="اختر منتجًا">Select a product</option>
+                    {serviceTypes.map((service) => (
+                      <option value={service.slug} data-i18n data-i18n-en={service.name} data-i18n-ar={serviceNameAr[service.name] || service.name}>{service.name}</option>
+                    ))}
+                    <option value="other" data-i18n data-i18n-en="Other / General Inquiry" data-i18n-ar="أخرى / استفسار عام">Other / General Inquiry</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="area" class="block text-sm font-medium text-stone-700" data-i18n data-i18n-en="Your Area" data-i18n-ar="منطقتك">
+                    Your Area
+                  </label>
+                  <select
+                    id="area"
+                    name="area"
+                    class="mt-1.5 w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+                  >
+                    <option value="" data-i18n data-i18n-en="Select your area" data-i18n-ar="اختر منطقتك">Select your area</option>
+                    {serviceAreas.map((area) => (
+                      <option value={area.slug} data-i18n data-i18n-en={area.name} data-i18n-ar={areaNameAr[area.name] || area.name}>{area.name}</option>
+                    ))}
+                    <option value="other" data-i18n data-i18n-en="Other Location" data-i18n-ar="موقع آخر">Other Location</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="message" class="block text-sm font-medium text-stone-700" data-i18n data-i18n-en="Message *" data-i18n-ar="الرسالة *">
+                  Message <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  required
+                  rows="5"
+                  placeholder="Tell us what you need: product inquiry, delivery request, bulk order, etc."
+                  class="mt-1.5 w-full rounded-lg border border-stone-300 px-4 py-2.5 text-sm text-stone-900 placeholder-stone-400 transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+                  data-i18n
+                  data-i18n-en="Tell us what you need: product inquiry, delivery request, bulk order, etc."
+                  data-i18n-ar="أخبرنا بما تحتاجه: استفسار عن منتج، طلب توصيل، طلب بالجملة، إلخ."
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-lg gradient-brand px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:opacity-90 hover:shadow-md sm:w-auto"
+                data-i18n
+                data-i18n-en="Send Message"
+                data-i18n-ar="إرسال الرسالة"
+              >
+                <Icon name="lucide:send" class="size-4" />
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2">
+          <div class="rounded-xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-sm">
+            <h2 class="font-display text-2xl text-brand-900" data-i18n data-i18n-en="Contact Information" data-i18n-ar="معلومات الاتصال">Contact Information</h2>
+
+            <ul class="mt-6 space-y-5">
+              <li class="flex items-start gap-3">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand-50 to-brand-100">
+                  <Icon name="lucide:phone" class="size-5 text-brand-700" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-stone-700" data-i18n data-i18n-en="Phone / WhatsApp" data-i18n-ar="الهاتف / واتساب">Phone / WhatsApp</p>
+                  <a
+                    href={business.phoneHref}
+                    class="text-sm text-brand-700 transition-colors hover:text-brand-900"
+                    data-i18n
+                    data-i18n-en={business.phone}
+                    data-i18n-ar={business.phone}
+                  >
+                    {business.phone}
+                  </a>
+                </div>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand-50 to-brand-100">
+                  <Icon name="lucide:mail" class="size-5 text-brand-700" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-stone-700" data-i18n data-i18n-en="Email" data-i18n-ar="البريد الإلكتروني">Email</p>
+                  <a
+                    href={`mailto:${business.email}`}
+                    class="text-sm text-brand-700 transition-colors hover:text-brand-900"
+                    data-i18n
+                    data-i18n-en={business.email}
+                    data-i18n-ar={business.email}
+                  >
+                    {business.email}
+                  </a>
+                </div>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand-50 to-brand-100">
+                  <Icon name="lucide:map-pin" class="size-5 text-brand-700" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-stone-700" data-i18n data-i18n-en="Location" data-i18n-ar="الموقع">Location</p>
+                  <p class="text-sm text-stone-600" data-i18n data-i18n-en={`${business.address.street}, ${business.address.city}, ${business.address.country}`} data-i18n-ar={`${business.address.street}، ${business.address.city}، ${business.address.country}`}>
+                    {business.address.street}, {business.address.city}, {business.address.country}
+                  </p>
+                </div>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand-50 to-brand-100">
+                  <Icon name="lucide:clock" class="size-5 text-brand-700" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-stone-700" data-i18n data-i18n-en="Business Hours" data-i18n-ar="ساعات العمل">Business Hours</p>
+                  <div class="mt-1 space-y-0.5 text-sm text-stone-600">
+                    {business.hours.map((schedule) => (
+                      <p data-i18n data-i18n-en={`${schedule.days}: ${schedule.hours}`} data-i18n-ar={`${schedule.days}: ${schedule.hours}`}>
+                        <span class="font-medium">{schedule.days}:</span> {schedule.hours}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </li>
+            </ul>
+
+            <div class="mt-8 rounded-lg border border-amber-200/60 bg-gradient-to-br from-amber-50 to-orange-50 p-4">
+              <div class="flex items-start gap-3">
+                <Icon name="lucide:truck" class="mt-0.5 size-5 shrink-0 text-amber-600" />
+                <div>
+                  <p class="text-sm font-semibold text-amber-800" data-i18n data-i18n-en="Need Delivery?" data-i18n-ar="تحتاج توصيلاً؟">Need Delivery?</p>
+                  <p class="mt-1 text-sm text-amber-700" data-i18n data-i18n-en={`We deliver fresh produce across MBZ City, Musaffah, and Mussafah Shabiya. Call us on ${business.phone} or WhatsApp your order list.`} data-i18n-ar={`نوصّل المنتجات الطازجة في جميع أنحاء مدينة محمد بن زايد ومصفح والشابية (مصفح). اتصل بنا على ${business.phone} أو أرسل قائمة طلبك عبر واتساب.`}>
+                    We deliver fresh produce across MBZ City, Musaffah, and Mussafah Shabiya.
+                    Call us on
+                    <a href={business.phoneHref} class="font-semibold underline" data-i18n data-i18n-en={business.phone} data-i18n-ar={business.phone}>
+                      {business.phone}
+                    </a>
+                    or WhatsApp your order list.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MAP ============ -->
+  <section class="pb-16 lg:pb-24">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="scroll-reveal">
+        <h2 class="font-display text-2xl text-brand-900 sm:text-3xl" data-i18n data-i18n-en="Find Us on the Map" data-i18n-ar="جدنا على الخريطة">
+          Find Us on the Map
+        </h2>
+        <p class="mt-2 text-stone-600" data-i18n data-i18n-en="Visit our shop on Al Ithmid St, MBZ City, ME10, Abu Dhabi." data-i18n-ar="زُر متجرنا في شارع الإثميد، مدينة محمد بن زايد، مِي 10، أبوظبي.">
+          Visit our shop on Al Ithmid St, MBZ City, ME10, Abu Dhabi.
+        </p>
+      </div>
+      <div class="mt-6 overflow-hidden rounded-xl border border-stone-200 shadow-sm scroll-reveal scroll-reveal-delay-2">
+        <iframe
+          src="https://maps.google.com/maps?q=Al+Ithmid+Street,+MBZ+City,+ME10,+Abu+Dhabi&z=16&output=embed"
+          width="100%"
+          height="400"
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title={`${business.name} location on Google Maps`}
+          class="w-full"
+        ></iframe>
+      </div>
+      <div class="mt-4 scroll-reveal scroll-reveal-delay-3">
+        <a
+          href="https://maps.app.goo.gl/LjRCJNuph6pihaiT6"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 text-sm font-medium text-brand-700 transition-colors hover:text-brand-900"
+          data-i18n
+          data-i18n-en="Open in Google Maps"
+          data-i18n-ar="افتح في خرائط Google"
+        >
+          <Icon name="lucide:external-link" class="size-4" />
+          Open in Google Maps
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

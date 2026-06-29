@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kavegetables.com/sitemap-index.xml

@@ -1,0 +1,430 @@
+---
+import { Icon } from 'astro-icon/components';
+import { business, yearsInBusiness } from '../../data/business';
+import { serviceTypes } from '../../data/serviceTypes';
+import { serviceAreas, getAreaBySlug, getNearbyAreas } from '../../data/serviceAreas';
+import { serviceUrl, areaUrl, comboUrl, contactUrl } from '../../lib/urls';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import SeoFaq from '../../components/SeoFaq.astro';
+import SeoTestimonials from '../../components/SeoTestimonials.astro';
+
+import type { ServiceArea } from '../../data/serviceAreas';
+
+export function getStaticPaths() {
+  return serviceAreas.map((area) => ({
+    params: { area: area.slug },
+    props: { area },
+  }));
+}
+
+interface Props {
+  area: ServiceArea;
+}
+
+const { area } = Astro.props;
+
+const nearbyAreas = getNearbyAreas(area);
+
+const pageTitle = `Fresh Produce in ${area.name}, Abu Dhabi`;
+const metaDescription = `${business.name} provides fresh fruits, vegetables, greens, and herbs in ${area.name}, Abu Dhabi. ${area.responseTime} delivery. Call ${business.phone}.`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'GroceryStore',
+  name: business.name,
+  description: `${business.name} provides fresh fruits, vegetables, and produce in ${area.name}, Abu Dhabi.`,
+  telephone: business.phone,
+  url: business.website,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: business.address.street,
+    addressLocality: area.name,
+    addressRegion: 'Abu Dhabi',
+    addressCountry: 'United Arab Emirates',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: area.lat,
+    longitude: area.lng,
+  },
+  areaServed: [
+    { '@type': 'City', name: area.name },
+    { '@type': 'AdministrativeArea', name: area.county },
+  ],
+  openingHoursSpecification: business.hours.map((h) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    opens: '07:00',
+    closes: '00:00',
+  })),
+  priceRange: '$$',
+};
+
+const areaImages: Record<string, string> = {
+  'mohammed-bin-zayed-city': '/images/fresh-produce-display.webp',
+  'mbz-city': '/images/green-vegetables-crates.webp',
+  'me10': '/images/vegetable-counter.webp',
+  'musaffah': '/images/basket-vegetables.webp',
+  'mussafah-shabiya': '/images/produce-market-display.webp',
+  'shabiya': '/images/vegetables-fruits-arrangement.webp',
+  'shabiya-10': '/images/natural-vegetable-arrangement.webp',
+  'shabiya-11': '/images/salad-vegetables.webp',
+  'shabiya-12': '/images/fresh-vegetables-water.webp',
+  'abu-dhabi': '/images/seasonal-produce.webp',
+};
+
+const heroImage = areaImages[area.slug] || '/images/fresh-produce-display.webp';
+
+const areaHighlights = [
+  { icon: 'lucide:leaf', title: 'Daily Fresh Stock', titleAr: 'مخزون يومي طازج', desc: `New produce arrives every morning for ${area.name} customers.`, descAr: `تصل منتجات جديدة كل صباح لعملاء ${area.name}.` },
+  { icon: 'lucide:truck', title: 'Fast Delivery', titleAr: 'توصيل سريع', desc: `${area.responseTime} delivery to your door in ${area.name}.`, descAr: `توصيل خلال ${area.responseTime} إلى باب منزلك في ${area.name}.` },
+  { icon: 'lucide:award', title: 'Quality Checked', titleAr: 'فحص الجودة', desc: 'Every item inspected for freshness before delivery.', descAr: 'يتم فحص كل عنصر للتأكد من طزاجته قبل التوصيل.' },
+  { icon: 'lucide:handshake', title: 'Fair Prices', titleAr: 'أسعار عادلة', desc: 'Competitive pricing on all fruits, vegetables, and greens.', descAr: 'أسعار تنافسية على جميع الفواكه والخضروات والأوراق الخضراء.' },
+];
+---
+
+<BaseLayout title={pageTitle} description={metaDescription} schema={schema}>
+  <Breadcrumbs
+    crumbs={[
+      { label: 'Areas We Serve', href: '/areas/' },
+      { label: area.name },
+    ]}
+  />
+
+  <!-- ============ HERO ============ -->
+  <section class="relative overflow-hidden gradient-hero">
+    <div class="absolute inset-0">
+      <img
+        src={heroImage}
+        alt={`Fresh produce delivery in ${area.name}, Abu Dhabi`}
+        class="h-full w-full object-cover opacity-15"
+        width="1376"
+        height="768"
+        loading="eager"
+      />
+    </div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(98,180,16,0.25),_transparent_60%)]" />
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(244,124,0,0.08),_transparent_50%)]" />
+
+    <div class="relative mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
+      <div class="max-w-3xl">
+        <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-300 ring-1 ring-white/10 backdrop-blur-sm">
+          <Icon name="lucide:map-pin" class="size-3.5" />
+          {area.county}
+        </span>
+        <h1 class="mt-4 font-display text-4xl text-white sm:text-5xl lg:text-6xl">
+          <span class="en-text">Fresh Produce in {area.name}</span>
+          <span class="ar-text hidden">منتجات طازجة في {area.name}</span>
+        </h1>
+        <p class="mt-6 text-lg leading-relaxed text-brand-200">
+          <span class="en-text">{business.name} delivers daily fresh fruits, vegetables, leafy greens, and herbs to {area.name}. {area.responseTime} delivery. Call {business.phone}.</span>
+          <span class="ar-text hidden">يقدم {business.name} الفواكه الطازجة والخضروات والأوراق الخضراء والأعشاب يوميًا إلى {area.name}. توصيل خلال {area.responseTime}. اتصل على {business.phone}.</span>
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a
+            href={business.phoneHref}
+            class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-6 py-3 text-sm font-semibold text-brand-950 shadow-lg transition-all hover:bg-amber-400 hover:shadow-xl"
+          >
+            <Icon name="lucide:phone" class="size-5" />
+            <span class="en-text">Call {business.phone}</span>
+            <span class="ar-text hidden">اتصل على {business.phone}</span>
+          </a>
+          <a
+            href={contactUrl()}
+            class="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition-all hover:bg-white/20"
+          >
+            <Icon name="lucide:truck" class="size-5" />
+            <span class="en-text">Order Delivery</span>
+            <span class="ar-text hidden">اطلب التوصيل</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STATS BAR ============ -->
+  <section class="gradient-brand-dark relative overflow-hidden">
+    <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(98,180,16,0.1)_0%,transparent_50%,rgba(244,124,0,0.08)_100%)]" />
+    <div class="mx-auto grid max-w-7xl grid-cols-2 gap-px sm:grid-cols-4 relative">
+      {areaHighlights.map((stat) => (
+        <div class="flex items-center justify-center gap-3 px-4 py-5">
+          <Icon name={stat.icon} class="size-5 shrink-0 text-amber-400" />
+          <span class="text-sm font-medium text-white">
+            <span class="en-text">{stat.title}</span>
+            <span class="ar-text hidden">{stat.titleAr}</span>
+          </span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ============ ABOUT AREA ============ -->
+  <section class="gradient-cream py-16 lg:py-24">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
+        <div class="scroll-reveal">
+          <h2 class="font-display text-3xl text-brand-900 sm:text-4xl">
+            <span class="en-text">Fresh Produce Delivered to {area.name}</span>
+            <span class="ar-text hidden">منتجات طازجة يتم توصيلها إلى {area.name}</span>
+          </h2>
+          <p class="mt-6 text-lg leading-relaxed text-stone-600">
+            <span class="en-text">{area.description}</span>
+            <span class="ar-text hidden">{area.arDescription}</span>
+          </p>
+          <p class="mt-4 leading-relaxed text-stone-600">
+            <span class="en-text">{business.name} proudly serves {area.name} with daily fresh fruits, vegetables, leafy greens, and herbs. Whether you are cooking for your family, running a restaurant, or managing a cafeteria, we deliver the quality and freshness you need at fair prices.</span>
+            <span class="ar-text hidden">يخدم {business.name} {area.name} بفخر بالفواكه الطازجة والخضروات والأوراق الخضراء والأعشاب يوميًا. سواء كنت تطبخ لعائلتك أو تدير مطعمًا أو مقصفًا، فإننا نقدم الجودة والطزاجة التي تحتاجها بأسعار عادلة.</span>
+          </p>
+          <p class="mt-4 leading-relaxed text-stone-600">
+            <span class="en-text">Our shop on Al Ithmid St in ME10 is stocked every morning with the best local and imported produce. For customers in {area.name}, we offer convenient delivery service so you never have to compromise on freshness.</span>
+            <span class="ar-text hidden">يتم تزويد متجرنا في شارع الإثمد في منطقة ME10 كل صباح بأفضل المنتجات المحلية والمستوردة. نقدم لعملائنا في {area.name} خدمة توصيل مريحة حتى لا تضطر أبدًا للتنازل عن الطزاجة.</span>
+          </p>
+          <div class="mt-8 flex flex-wrap gap-4">
+            <a
+              href={business.phoneHref}
+              class="inline-flex items-center gap-2 rounded-lg gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:opacity-90"
+            >
+              <Icon name="lucide:phone" class="size-4" />
+              <span class="en-text">Call Now</span>
+              <span class="ar-text hidden">اتصل الآن</span>
+            </a>
+            <a
+              href={contactUrl()}
+              class="inline-flex items-center gap-2 rounded-lg border border-brand-300 bg-white px-5 py-2.5 text-sm font-semibold text-brand-700 transition-colors hover:bg-brand-50"
+            >
+              <Icon name="lucide:message-square" class="size-4" />
+              <span class="en-text">Send a Message</span>
+              <span class="ar-text hidden">أرسل رسالة</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="scroll-reveal scroll-reveal-delay-2">
+          <div class="rounded-xl border border-stone-200/60 bg-white p-6 shadow-sm">
+            <h3 class="text-sm font-semibold uppercase tracking-wide text-stone-400">
+              <span class="en-text">Quick Facts</span>
+              <span class="ar-text hidden">معلومات سريعة</span>
+            </h3>
+            <dl class="mt-4 space-y-4">
+              <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+                <dt class="text-sm text-stone-500">
+                  <span class="en-text">Area</span>
+                  <span class="ar-text hidden">المنطقة</span>
+                </dt>
+                <dd class="text-sm font-semibold text-stone-800">{area.name}</dd>
+              </div>
+              <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+                <dt class="text-sm text-stone-500">
+                  <span class="en-text">Emirate</span>
+                  <span class="ar-text hidden">الإمارة</span>
+                </dt>
+                <dd class="text-sm font-semibold text-stone-800">{area.county}</dd>
+              </div>
+              <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+                <dt class="text-sm text-stone-500">
+                  <span class="en-text">Population</span>
+                  <span class="ar-text hidden">السكان</span>
+                </dt>
+                <dd class="text-sm font-semibold text-stone-800">{area.population.toLocaleString()}</dd>
+              </div>
+              <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+                <dt class="text-sm text-stone-500">
+                  <span class="en-text">Delivery Time</span>
+                  <span class="ar-text hidden">وقت التوصيل</span>
+                </dt>
+                <dd class="flex items-center gap-1.5 text-sm font-semibold text-brand-700">
+                  <Icon name="lucide:clock" class="size-4 text-brand-500" />
+                  {area.responseTime}
+                </dd>
+              </div>
+              <div class="flex items-center justify-between">
+                <dt class="text-sm text-stone-500">
+                  <span class="en-text">Shop Hours</span>
+                  <span class="ar-text hidden">ساعات العمل</span>
+                </dt>
+                <dd class="text-sm font-semibold text-stone-800">
+                  <span class="en-text">Daily 7AM - 12AM</span>
+                  <span class="ar-text hidden">يوميًا من 7 صباحًا حتى 12 منتصف الليل</span>
+                </dd>
+              </div>
+            </dl>
+
+            <div class="mt-6 border-t border-stone-100 pt-5">
+              <a
+                href={business.phoneHref}
+                class="flex w-full items-center justify-center gap-2 rounded-lg gradient-brand px-4 py-2.5 text-sm font-medium text-white transition-all hover:opacity-90"
+              >
+                <Icon name="lucide:phone" class="size-4" />
+                {business.phone}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRODUCTS ============ -->
+  <section class="border-t border-stone-200/60 gradient-subtle py-16 lg:py-24">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="scroll-reveal text-center">
+        <h2 class="font-display text-3xl text-brand-900 sm:text-4xl">
+          <span class="en-text">Products Available in {area.name}</span>
+          <span class="ar-text hidden">المنتجات المتوفرة في {area.name}</span>
+        </h2>
+        <p class="mx-auto mt-4 max-w-2xl text-stone-600">
+          <span class="en-text">Browse our full range of fresh produce available for delivery and pickup in {area.name}.</span>
+          <span class="ar-text hidden">تصفح مجموعتنا الكاملة من المنتجات الطازجة المتوفرة للتوصيل والاستلام في {area.name}.</span>
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {serviceTypes.map((service, i) => (
+          <a
+            href={comboUrl(area.slug, service.slug)}
+            class={`card-hover group relative overflow-hidden rounded-xl border border-stone-200/80 bg-white p-6 scroll-reveal scroll-reveal-delay-${Math.min(i + 1, 6)}`}
+          >
+            <div class="absolute -right-6 -top-6 size-24 rounded-full bg-gradient-to-br from-brand-50 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div class="relative">
+              <div class="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-50 to-brand-100 text-brand-700 transition-all duration-300 group-hover:from-brand-100 group-hover:to-brand-200 group-hover:scale-110 group-hover:shadow-md">
+                <Icon name={service.icon} class="size-6" />
+              </div>
+              <h3 class="mt-4 font-display text-lg text-brand-900 group-hover:text-brand-700">
+                <span class="en-text">{service.name}</span>
+                <span class="ar-text hidden">{service.arName}</span>
+              </h3>
+              <p class="mt-2 text-sm leading-relaxed text-stone-600">
+                <span class="en-text">{service.description.slice(0, 80)}...</span>
+                <span class="ar-text hidden">{service.arDescription.slice(0, 80)}...</span>
+              </p>
+              <div class="mt-4 flex items-center gap-1 text-xs font-semibold text-brand-700 opacity-0 transition-all duration-300 group-hover:opacity-100">
+                <span>
+                  <span class="en-text">View in {area.name}</span>
+                  <span class="ar-text hidden">عرض في {area.name}</span>
+                </span>
+                <Icon name="lucide:arrow-right" class="size-3 transition-transform duration-300 group-hover:translate-x-1" />
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHY CHOOSE US ============ -->
+  <section class="gradient-cream py-16 lg:py-24">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="scroll-reveal text-center">
+        <h2 class="font-display text-3xl text-brand-900 sm:text-4xl">
+          <span class="en-text">Why {area.name} Chooses KA Fresh</span>
+          <span class="ar-text hidden">لماذا تختار {area.name} كيه أي فريش</span>
+        </h2>
+        <p class="mx-auto mt-4 max-w-2xl text-stone-600">
+          <span class="en-text">Local families, restaurants, and businesses in {area.name} trust us for their daily produce needs.</span>
+          <span class="ar-text hidden">العائلات المحلية والمطاعم والشركات في {area.name} تثق بنا لتلبية احتياجاتها اليومية من المنتجات الطازجة.</span>
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { icon: 'lucide:leaf', title: 'Daily Fresh Stock', titleAr: 'مخزون يومي طازج', detail: 'We source fresh produce every morning. Nothing sits overnight.', detailAr: 'نحصل على المنتجات الطازجة كل صباح. لا نُبقي أي شيء حتى اليوم التالي.' },
+          { icon: 'lucide:truck', title: 'Delivery Available', titleAr: 'التوصيل متاح', detail: `Fresh produce delivered across ${area.name} and surrounding areas.`, detailAr: `توصيل المنتجات الطازجة في جميع أنحاء ${area.name} والمناطق المحيطة.` },
+          { icon: 'lucide:handshake', title: 'Fair Pricing', titleAr: 'أسعار عادلة', detail: 'Competitive prices on all fruits, vegetables, greens, and herbs.', detailAr: 'أسعار تنافسية على جميع الفواكه والخضروات والأوراق الخضراء والأعشاب.' },
+          { icon: 'lucide:heart', title: 'Local Service', titleAr: 'خدمة محلية', detail: `A neighborhood shop that knows and cares about ${area.name}.`, detailAr: `متجر حي يعرف ${area.name} ويهتم بها.` },
+        ].map((item, i) => (
+          <div class={`rounded-xl border border-stone-200/80 bg-white p-6 text-center scroll-reveal scroll-reveal-delay-${Math.min(i + 1, 6)}`}>
+            <div class="mx-auto flex size-14 items-center justify-center rounded-xl bg-gradient-to-br from-brand-50 to-brand-100 text-brand-700 transition-transform duration-300 hover:scale-110">
+              <Icon name={item.icon} class="size-7" />
+            </div>
+            <h3 class="mt-4 font-display text-lg text-brand-900">
+              <span class="en-text">{item.title}</span>
+              <span class="ar-text hidden">{item.titleAr}</span>
+            </h3>
+            <p class="mt-2 text-sm leading-relaxed text-stone-600">
+              <span class="en-text">{item.detail}</span>
+              <span class="ar-text hidden">{item.detailAr}</span>
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {nearbyAreas.length > 0 && (
+    <section class="border-t border-stone-200/60 gradient-subtle py-16 lg:py-24">
+      <div class="mx-auto max-w-7xl px-5 lg:px-8">
+        <div class="scroll-reveal">
+          <h2 class="font-display text-2xl text-brand-900 sm:text-3xl">
+            <span class="en-text">Nearby Areas We Serve</span>
+            <span class="ar-text hidden">المناطق المجاورة التي نخدمها</span>
+          </h2>
+          <p class="mt-3 max-w-2xl text-stone-600">
+            <span class="en-text">In addition to {area.name}, our delivery area covers these nearby communities.</span>
+            <span class="ar-text hidden">بالإضافة إلى {area.name}، تغطي منطقة توصيلنا هذه المجتمعات المجاورة.</span>
+          </p>
+        </div>
+
+        <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {nearbyAreas.map((nearby, i) => (
+            <a
+              href={areaUrl(nearby.slug)}
+              class={`card-hover group rounded-xl border border-stone-200/60 bg-white p-5 transition-all hover:border-brand-200 hover:shadow-md scroll-reveal scroll-reveal-delay-${Math.min(i + 1, 4)}`}
+            >
+              <div class="flex items-center gap-3">
+                <div class="flex size-10 items-center justify-center rounded-lg bg-gradient-to-br from-brand-50 to-brand-100 transition-all duration-300 group-hover:from-brand-100 group-hover:to-brand-200 group-hover:scale-110">
+                  <Icon name="lucide:map-pin" class="size-5 text-brand-600" />
+                </div>
+                <div>
+                  <span class="font-semibold text-stone-800 group-hover:text-brand-800">{nearby.name}</span>
+                  <span class="block text-xs text-stone-500">{nearby.county}</span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <div class="border-t border-stone-200/60 gradient-subtle">
+    <SeoFaq area={area} />
+  </div>
+
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <SeoTestimonials area={area} />
+  </div>
+
+  <!-- ============ CTA ============ -->
+  <section class="mt-16 gradient-cta relative overflow-hidden py-16">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(98,180,16,0.15),_transparent_60%)]" />
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(244,124,0,0.08),_transparent_50%)]" />
+    <div class="relative mx-auto max-w-4xl px-5 text-center lg:px-8">
+      <h2 class="font-display text-2xl text-white sm:text-3xl">
+        <span class="en-text">Need Fresh Produce in {area.name}?</span>
+        <span class="ar-text hidden">هل تحتاج إلى منتجات طازجة في {area.name}؟</span>
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-brand-200">
+        <span class="en-text">{business.name} is your local fresh produce shop serving {area.name} and the surrounding area. Call us today to place an order or arrange delivery.</span>
+        <span class="ar-text hidden">{business.name} هو متجرك المحلي للمنتجات الطازجة الذي يخدم {area.name} والمنطقة المحيطة. اتصل بنا اليوم لتقديم طلب أو ترتيب التوصيل.</span>
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <a
+          href={business.phoneHref}
+          class="inline-flex items-center gap-2 rounded-lg gradient-warm px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:opacity-90"
+        >
+          <Icon name="lucide:phone" class="size-4" />
+          {business.phone}
+        </a>
+        <a
+          href={contactUrl()}
+          class="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-white/20"
+        >
+          <Icon name="lucide:mail" class="size-4" />
+          <span class="en-text">Send a Message</span>
+          <span class="ar-text hidden">أرسل رسالة</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

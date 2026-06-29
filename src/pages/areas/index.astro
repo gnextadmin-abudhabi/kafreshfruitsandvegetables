@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { Icon } from 'astro-icon/components';
+import { business } from '../../data/business';
+import { serviceAreas } from '../../data/serviceAreas';
+import { areaUrl, contactUrl } from '../../lib/urls';
+
+function priorityClasses(priority: string): string {
+  switch (priority) {
+    case 'primary':
+      return 'bg-brand-100 text-brand-700';
+    case 'secondary':
+      return 'bg-stone-200 text-stone-700';
+    case 'tertiary':
+      return 'bg-stone-100 text-stone-500';
+    default:
+      return 'bg-stone-100 text-stone-500';
+  }
+}
+---
+
+<BaseLayout
+  title={`Areas We Serve | ${business.name}`}
+  description={`${business.name} serves Mohammed Bin Zayed City, Musaffah, Mussafah Shabiya, and greater Abu Dhabi with fresh produce delivery and in-store shopping.`}
+>
+  <Breadcrumbs crumbs={[{ label: 'Areas We Serve' }]} />
+
+  <section class="gradient-cream py-12 lg:py-16">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="max-w-3xl animate-fade-up">
+        <span class="inline-flex items-center gap-2 rounded-full bg-brand-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-700" data-i18n data-i18n-en="Delivery Coverage" data-i18n-ar="تغطية التوصيل">
+          <Icon name="lucide:map-pin" class="size-3.5" />
+          Delivery Coverage
+        </span>
+        <h1 class="mt-4 font-display text-4xl text-brand-900 sm:text-5xl" data-i18n data-i18n-en="Areas We Serve" data-i18n-ar="المناطق التي نخدمها">
+          Areas We Serve
+        </h1>
+        <p class="mt-4 text-lg leading-relaxed text-stone-600" data-i18n data-i18n-en="Based in MBZ City, we provide fresh fruits, vegetables, greens, and herbs throughout our service area. We know these communities because we are part of them." data-i18n-ar="يقع مقرنا في مدينة محمد بن زايد، حيث نقدم الفواكه الطازجة والخضروات والأوراق الخضراء والأعشاب في جميع أنحاء منطقة خدمتنا. نحن نعرف هذه المجتمعات لأننا جزء منها.">
+          Based in MBZ City, we provide fresh fruits, vegetables, greens,
+          and herbs throughout our service area. We know these communities
+          because we are part of them.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-16 lg:pb-24">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {serviceAreas.map((area, i) => (
+          <a
+            href={areaUrl(area.slug)}
+            class={`card-hover group rounded-xl border border-stone-200/80 bg-white p-6 animate-fade-up stagger-${Math.min(i + 1, 6)}`}
+          >
+            <div class="flex items-center justify-between">
+              <h2 class="font-display text-lg text-brand-900">
+                <span class="en-text">{area.name}</span>
+                <span class="ar-text hidden">{area.name}</span>
+              </h2>
+              <span class={`inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold capitalize ${priorityClasses(area.priority)}`}>
+                {area.priority}
+              </span>
+            </div>
+            <p class="mt-1 text-sm text-stone-500">{area.county}</p>
+
+            <div class="mt-3 flex items-center gap-4 text-sm text-stone-600">
+              <span class="flex items-center gap-1.5">
+                <Icon name="lucide:users" class="size-4 text-stone-400" />
+                {area.population.toLocaleString()}
+              </span>
+              <span class="flex items-center gap-1.5">
+                <Icon name="lucide:clock" class="size-4 text-brand-500" />
+                {area.responseTime}
+              </span>
+            </div>
+
+            <p class="mt-3 line-clamp-2 text-sm leading-relaxed text-stone-500">
+              <span class="en-text">{area.description}</span>
+              <span class="ar-text hidden">{area.arDescription}</span>
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="gradient-cta relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(98,180,16,0.15),_transparent_60%)]" />
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(244,124,0,0.08),_transparent_50%)]" />
+    <div class="relative mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-16">
+      <div class="flex flex-col items-center gap-6 text-center sm:flex-row sm:justify-between sm:text-left">
+        <div>
+          <h2 class="font-display text-3xl text-white" data-i18n data-i18n-en="Not Sure If We Deliver to Your Area?" data-i18n-ar="غير متأكد مما إذا كنا نصل إلى منطقتك؟">Not Sure If We Deliver to Your Area?</h2>
+          <p class="mt-2 text-brand-200" data-i18n data-i18n-en="Give us a call. If you are anywhere in MBZ City, Musaffah, or Shabiya, we can deliver fresh produce to you." data-i18n-ar="اتصل بنا. إذا كنت في أي مكان في مدينة محمد بن زايد أو مصفح أو الشابية، يمكننا توصيل المنتجات الطازجة إليك.">
+            Give us a call. If you are anywhere in MBZ City, Musaffah, or Shabiya, we can deliver fresh produce to you.
+          </p>
+        </div>
+        <div class="flex shrink-0 flex-wrap gap-4">
+          <a
+            href={business.phoneHref}
+            class="inline-flex items-center gap-2 rounded-lg gradient-warm px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:opacity-90"
+          >
+            <Icon name="lucide:phone" class="size-5" />
+            {business.phone}
+          </a>
+          <a
+            href={contactUrl()}
+            class="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-white/20"
+            data-i18n
+            data-i18n-en="Contact Us"
+            data-i18n-ar="اتصل بنا"
+          >
+            Contact Us
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
