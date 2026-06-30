@@ -254,6 +254,31 @@
     margin-bottom: 0.5rem;
   }
 
+  /* Mobile performance */
+  html {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Prevent text size adjustment on orientation change */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Better mobile tap targets */
+  @media (max-width: 640px) {
+    a, button {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+
   /* RTL support */
   .rtl-active {
     font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
