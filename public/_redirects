@@ -1,0 +1,6 @@
+# Redirect www to non-www
+https://www.kavegetables.com/* https://kavegetables.com/:splat 301
+http://www.kavegetables.com/* https://kavegetables.com/:splat 301
+
+# Redirect HTTP to HTTPS
+http://kavegetables.com/* https://kavegetables.com/:splat 301
