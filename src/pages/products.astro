@@ -4,7 +4,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import { Icon } from 'astro-icon/components';
 import { business } from '../data/business';
 import { products, productCategories } from '../data/products';
-import { contactUrl } from '../lib/urls';
+import { contactUrl, whatsappUrl } from '../lib/urls';
 
 const schema = {
   '@context': 'https://schema.org',
@@ -56,20 +56,31 @@ const schema = {
     </div>
   </section>
 
-  <!-- Category Filter -->
+  <!-- Category Filter + Search -->
   <section class="border-b border-stone-200/60 bg-white sticky top-0 z-30">
-    <div class="mx-auto max-w-7xl px-5 py-4 lg:px-8">
-      <div class="flex items-center gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" id="category-filters">
-        {productCategories.map((cat) => (
-          <button
-            type="button"
-            data-category={cat.slug}
-            class={`filter-btn shrink-0 rounded-full px-5 py-2 text-sm font-semibold transition-all ${cat.slug === 'all' ? 'bg-brand-700 text-white shadow-md' : 'bg-stone-100 text-stone-600 hover:bg-brand-50 hover:text-brand-700'}`}
-          >
-            <span class="en-text">{cat.name}</span>
-            <span class="ar-text hidden">{cat.arName}</span>
-          </button>
-        ))}
+    <div class="mx-auto max-w-7xl px-5 py-3 lg:px-8">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" id="category-filters">
+          {productCategories.map((cat) => (
+            <button
+              type="button"
+              data-category={cat.slug}
+              class={`filter-btn shrink-0 rounded-full px-5 py-2 text-sm font-semibold transition-all ${cat.slug === 'all' ? 'bg-brand-700 text-white shadow-md' : 'bg-stone-100 text-stone-600 hover:bg-brand-50 hover:text-brand-700'}`}
+            >
+              <span class="en-text">{cat.name}</span>
+              <span class="ar-text hidden">{cat.arName}</span>
+            </button>
+          ))}
+        </div>
+        <div class="relative shrink-0">
+          <Icon name="lucide:search" class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-stone-400" />
+          <input
+            type="text"
+            id="product-search"
+            placeholder="Search products..."
+            class="w-full sm:w-56 rounded-lg border border-stone-200 bg-stone-50 py-2 pl-9 pr-4 text-sm text-stone-700 placeholder-stone-400 transition-colors focus:border-brand-400 focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+          />
+        </div>
       </div>
     </div>
   </section>
@@ -105,8 +116,8 @@ const schema = {
                 </div>
               )}
 
-              {/* Quick action overlay */}
-              <div class="absolute inset-x-0 bottom-0 z-20 flex items-end justify-center gap-3 pb-5 opacity-0 transition-all duration-500 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0">
+              {/* Quick action overlay — always visible on mobile, hover on desktop */}
+              <div class="absolute inset-x-0 bottom-0 z-20 flex items-end justify-center gap-3 pb-3 lg:pb-5 opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-4 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 transition-all duration-500">
                 <a
                   href={business.phoneHref}
                   class="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-brand-800 shadow-lg transition-transform hover:scale-105"
@@ -116,12 +127,12 @@ const schema = {
                   <span class="ar-text hidden">اطلب</span>
                 </a>
                 <a
-                  href={contactUrl()}
+                  href={whatsappUrl()}
                   class="inline-flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur px-4 py-2 text-xs font-bold text-brand-800 shadow-lg transition-transform hover:scale-105"
                 >
                   <Icon name="lucide:message-square" class="size-3.5" />
-                  <span class="en-text">Inquire</span>
-                  <span class="ar-text hidden">استفسر</span>
+                  <span class="en-text">Contact Us</span>
+                  <span class="ar-text hidden">اتصل بنا</span>
                 </a>
               </div>
             </div>
@@ -189,12 +200,12 @@ const schema = {
           {business.phone}
         </a>
         <a
-          href={contactUrl()}
+          href={whatsappUrl()}
           class="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-white/20"
         >
           <Icon name="lucide:message-square" class="size-4" />
-          <span class="en-text">Send a Message</span>
-          <span class="ar-text hidden">أرسل رسالة</span>
+          <span class="en-text">Contact Us on WhatsApp</span>
+          <span class="ar-text hidden">اتصل بنا عبر واتساب</span>
         </a>
       </div>
     </div>
@@ -204,12 +215,40 @@ const schema = {
     (function() {
       var buttons = document.querySelectorAll('.filter-btn');
       var cards = document.querySelectorAll('.product-card');
+      var searchInput = document.getElementById('product-search');
+      var activeCategory = 'all';
+
+      function filterCards() {
+        var query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+        cards.forEach(function(card) {
+          var cardCat = card.getAttribute('data-category');
+          var nameEl = card.querySelector('.font-display .en-text');
+          var cardName = nameEl ? nameEl.textContent.toLowerCase() : '';
+
+          var catMatch = activeCategory === 'all' || cardCat === activeCategory;
+          var searchMatch = !query || cardName.indexOf(query) !== -1;
+
+          if (catMatch && searchMatch) {
+            card.style.display = '';
+            setTimeout(function() {
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            }, 50);
+          } else {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(function() {
+              card.style.display = 'none';
+            }, 300);
+          }
+        });
+      }
 
       buttons.forEach(function(btn) {
         btn.addEventListener('click', function() {
-          var category = btn.getAttribute('data-category');
+          activeCategory = btn.getAttribute('data-category');
 
-          // Update active button
           buttons.forEach(function(b) {
             b.classList.remove('bg-brand-700', 'text-white', 'shadow-md');
             b.classList.add('bg-stone-100', 'text-stone-600');
@@ -217,25 +256,13 @@ const schema = {
           btn.classList.remove('bg-stone-100', 'text-stone-600');
           btn.classList.add('bg-brand-700', 'text-white', 'shadow-md');
 
-          // Filter cards
-          cards.forEach(function(card) {
-            var cardCat = card.getAttribute('data-category');
-            if (category === 'all' || cardCat === category) {
-              card.style.display = '';
-              setTimeout(function() {
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-              }, 50);
-            } else {
-              card.style.opacity = '0';
-              card.style.transform = 'translateY(20px)';
-              setTimeout(function() {
-                card.style.display = 'none';
-              }, 300);
-            }
-          });
+          filterCards();
         });
       });
+
+      if (searchInput) {
+        searchInput.addEventListener('input', filterCards);
+      }
     })();
   </script>
 </BaseLayout>
