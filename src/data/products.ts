@@ -23,6 +23,7 @@ export const productCategories = [
   { slug: 'herbs', name: 'Herbs', arName: 'الأعشاب' },
 ];
 
+// KA Fresh — 39 products, prices in AED, updated Jul 12
 export const products: Product[] = [
   {
     id: 'tomatoes',
