@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff5f5"/>
+      <stop offset="100%" stop-color="#ffe0e0"/>
+    </linearGradient>
+    <linearGradient id="berry" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b6b"/>
+      <stop offset="50%" stop-color="#ee2b2b"/>
+      <stop offset="100%" stop-color="#c41e1e"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#bg)"/>
+  <circle cx="200" cy="220" r="70" fill="url(#berry)"/>
+  <circle cx="300" cy="180" r="75" fill="url(#berry)"/>
+  <circle cx="400" cy="220" r="65" fill="url(#berry)"/>
+  <circle cx="250" cy="320" r="72" fill="url(#berry)"/>
+  <circle cx="350" cy="300" r="68" fill="url(#berry)"/>
+  <circle cx="300" cy="400" r="70" fill="url(#berry)"/>
+  <text x="300" y="520" text-anchor="middle" font-family="Inter, sans-serif" font-size="28" font-weight="700" fill="#c41e1e">Strawberry</text>
+  <text x="300" y="555" text-anchor="middle" font-family="Noto Sans Arabic, Inter, sans-serif" font-size="22" fill="#c41e1e" opacity="0.8">فراولة</text>
+</svg>

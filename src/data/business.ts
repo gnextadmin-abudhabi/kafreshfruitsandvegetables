@@ -120,8 +120,8 @@ export const business: Business = {
   serviceRadius: 'Mohammed Bin Zayed City, Musaffah, and Mussafah Shabiya',
   schemaType: 'GroceryStore',
 
-  logo: '/images/logo-sm.png',
-  logoWhite: '/images/logo-sm.png',
+  logo: '/images/logo-sm.webp',
+  logoWhite: '/images/logo-white-sm.webp',
   ogImage: '/images/fresh-produce-display.webp',
 };
 
