@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <defs>
+    <linearGradient id="mbg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff8e6"/>
+      <stop offset="100%" stop-color="#ffe8b8"/>
+    </linearGradient>
+    <linearGradient id="mango" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd93d"/>
+      <stop offset="40%" stop-color="#ffb800"/>
+      <stop offset="100%" stop-color="#f47c00"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#mbg)"/>
+  <ellipse cx="250" cy="280" rx="90" ry="110" fill="url(#mango)" transform="rotate(-20 250 280)"/>
+  <ellipse cx="360" cy="300" rx="85" ry="105" fill="url(#mango)" transform="rotate(15 360 300)"/>
+  <path d="M250 170 Q260 140 280 150" stroke="#4a7c2a" stroke-width="6" fill="none"/>
+  <path d="M360 195 Q380 165 400 180" stroke="#4a7c2a" stroke-width="6" fill="none"/>
+  <text x="300" y="480" text-anchor="middle" font-family="Inter, sans-serif" font-size="26" font-weight="700" fill="#d46900">Pakistani Mango</text>
+  <text x="300" y="515" text-anchor="middle" font-family="Noto Sans Arabic, Inter, sans-serif" font-size="20" fill="#d46900" opacity="0.8">مانجو باكستاني</text>
+</svg>
