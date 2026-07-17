@@ -60,7 +60,7 @@ export const products: Product[] = [
     arName: 'فلفل حلو',
     category: 'vegetables',
     arCategory: 'خضروات',
-    price: 1.0,
+    price: 5.0,
     arPrice: '١٫٠٠',
     unit: 'kg',
     arUnit: 'كجم',
